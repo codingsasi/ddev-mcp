@@ -841,7 +841,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
   // Platform.sh integration
   {
     name: 'ddev_platform',
-    description: 'Execute Platform.sh CLI commands in web container (REQUIRES USER CONFIRMATION)',
+    description: 'Execute Platform.sh CLI commands in web container (AUTOMATIC USER CONFIRMATION for dangerous operations)',
     inputSchema: {
       type: 'object',
       properties: {
@@ -851,13 +851,8 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         },
         command: {
           type: 'string',
-          description: 'Platform.sh command (e.g., "environment:list", "db:dump", "environment:redeploy", "-edev ssh -- drush status")',
+          description: 'Platform.sh command (e.g., "environment:list", "db:dump", "environment:redeploy", "-edev ssh -- drush status"). Dangerous commands will automatically prompt for user confirmation.',
           default: 'environment:list'
-        },
-        confirmExecution: {
-          type: 'boolean',
-          description: 'REQUIRED: Explicit confirmation to execute Platform.sh commands (safety measure)',
-          default: false
         },
         timeout: {
           type: 'number',
@@ -865,7 +860,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
           default: 120000
         }
       },
-      required: ['projectPath', 'confirmExecution']
+      required: ['projectPath']
     }
   },
 
@@ -1399,6 +1394,51 @@ export const DDEV_TOOLS: ToolDefinition[] = [
           default: 60000
         }
       }
+    }
+  },
+  // User Interaction Tools
+  {
+    name: 'request_user_input',
+    description: 'Ask the user a question and return their answer. Can display predefined options.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          description: 'The question or message to display to the user'
+        },
+        options: {
+          type: 'array',
+          items: {
+            type: 'string'
+          },
+          description: 'Optional predefined options for the user to choose from'
+        },
+        timeout: {
+          type: 'number',
+          description: 'Timeout in seconds (default: 30)',
+          default: 30
+        }
+      },
+      required: ['message']
+    }
+  },
+  {
+    name: 'message_complete_notification',
+    description: 'Send a simple OS notification to the user',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        title: {
+          type: 'string',
+          description: 'Notification title'
+        },
+        message: {
+          type: 'string',
+          description: 'Notification message'
+        }
+      },
+      required: ['title', 'message']
     }
   }
 ];

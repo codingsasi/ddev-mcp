@@ -1189,39 +1189,12 @@ export class DDEVOperations {
    */
   async platform(options: DDEVCommandOptions & {
     command?: string;
-    confirmExecution?: boolean;
   }): Promise<CommandResult> {
     const command = options.command || 'environment:list';
 
-    // Safety check: Require explicit user confirmation
-    if (!options.confirmExecution) {
-      const errorMessage = `SECURITY WARNING: Platform.sh commands can affect production environments.
-
-To execute this command, you must explicitly set confirmExecution: true.
-
-Command that was blocked: "${command}"
-Project path: ${options.projectPath}
-
-This safety measure prevents accidental execution of potentially destructive Platform.sh operations.`;
-
-      this.logger.warn('Platform.sh command blocked - no user confirmation', {
-        command,
-        projectPath: options.projectPath
-      });
-
-      return {
-        success: false,
-        exitCode: 1,
-        output: '',
-        error: errorMessage,
-        duration: 0
-      };
-    }
-
-    this.logger.info('Executing Platform.sh command with user confirmation', {
+    this.logger.info('Executing Platform.sh command', {
       command,
-      projectPath: options.projectPath,
-      confirmExecution: options.confirmExecution
+      projectPath: options.projectPath
     });
 
     const args: string[] = command.split(' ');
@@ -1505,4 +1478,103 @@ This safety measure prevents accidental execution of potentially destructive Pla
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
   }
+
+  /**
+   * Request user input with optional predefined options
+   */
+  async requestUserInput(options: {
+    message: string;
+    options?: string[];
+    timeout?: number;
+  }): Promise<CommandResult> {
+    const { message, options: userOptions = [], timeout = 30 } = options;
+
+    this.logger.info('Requesting user input', { message, options: userOptions, timeout });
+
+    const { getUserInput } = await import('../utils/userInput.js');
+
+    const startTime = Date.now();
+    const result = await getUserInput({
+      message,
+      options: userOptions,
+      timeout
+    });
+    const duration = Date.now() - startTime;
+
+    if (result.success && result.response) {
+      return {
+        success: true,
+        output: `User input: ${result.response}`,
+        error: undefined,
+        exitCode: 0,
+        duration
+      };
+    } else if (result.timedOut) {
+      return {
+        success: false,
+        output: 'User did not reply: Timeout occurred.',
+        error: 'User input timeout',
+        exitCode: 1,
+        duration
+      };
+    } else {
+      return {
+        success: false,
+        output: 'User input failed',
+        error: result.error || 'Unknown error',
+        exitCode: 1,
+        duration
+      };
+    }
+  }
+
+  /**
+   * Send a notification to the user
+   */
+  async sendNotification(options: {
+    title: string;
+    message: string;
+  }): Promise<CommandResult> {
+    const { title, message } = options;
+
+    this.logger.info('Sending notification', { title, message });
+
+    try {
+      // Try to use node-notifier for system notifications
+      const notifier = await import('node-notifier').catch(() => null);
+
+      if (notifier) {
+        notifier.default.notify({
+          title,
+          message,
+          timeout: 15, // 15 seconds - longer for important notifications
+        });
+      } else {
+        // Fallback to console notification
+        console.log(`\n🔔 ${title}: ${message}\n`);
+      }
+
+      const notificationText = `NOTIFICATION: ${title}\n${message}`;
+      return {
+        success: true,
+        output: notificationText,
+        error: undefined,
+        exitCode: 0,
+        duration: 0
+      };
+    } catch (error) {
+      // Fallback to console if notification fails
+      console.log(`\n🔔 ${title}: ${message}\n`);
+
+      const notificationText = `NOTIFICATION: ${title}\n${message}`;
+      return {
+        success: true,
+        output: notificationText,
+        error: undefined,
+        exitCode: 0,
+        duration: 0
+      };
+    }
+  }
+
 }

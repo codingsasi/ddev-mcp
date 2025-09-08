@@ -173,7 +173,7 @@ export class DDEVMCPServer {
       case 'ddev_mysql':
         return await this.ddevOps.mysql(args);
       case 'ddev_platform':
-        return await this.ddevOps.platform(args);
+        return await this.handlePlatformCommand(args);
       case 'ddev_playwright':
         return await this.ddevOps.playwright(args);
       case 'ddev_playwright_install':
@@ -207,12 +207,156 @@ export class DDEVMCPServer {
       case 'ddev_wp_maintenance':
         return await this.ddevOps.wpMaintenance(args);
 
+      // User Interaction Tools
+      case 'request_user_input':
+        return await this.ddevOps.requestUserInput(args);
+      case 'message_complete_notification':
+        return await this.ddevOps.sendNotification(args);
+
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,
           `Unknown tool: ${toolName}`
         );
     }
+  }
+
+  private async handlePlatformCommand(args: any): Promise<CommandResult> {
+    const command = args.command || 'environment:list';
+
+    // Check if the command is dangerous
+    if (this.isDangerousPlatformCommand(command)) {
+      // Request user confirmation using the MCP user interaction tool
+      const confirmationResult = await this.ddevOps.requestUserInput({
+        message: `⚠️  DANGER: This Platform.sh command can affect production environments!\n\nCommand: "${command}"\nProject: ${args.projectPath}\n\nDo you want to proceed?`,
+        options: ['yes', 'no'],
+        timeout: 120 // 2 minutes for dangerous commands
+      });
+
+      if (!confirmationResult.success || !confirmationResult.output.includes('yes')) {
+        return {
+          success: false,
+          exitCode: 1,
+          output: 'Command cancelled by user',
+          error: 'User did not confirm execution of dangerous Platform.sh command',
+          duration: 0
+        };
+      }
+
+      // Send notification about the dangerous command
+      await this.ddevOps.sendNotification({
+        title: 'Platform.sh Command Executing',
+        message: `Executing dangerous command: ${command}`
+      });
+    }
+
+    // Execute the platform command
+    return await this.ddevOps.platform(args);
+  }
+
+  private isDangerousPlatformCommand(command: string): boolean {
+    const dangerousPatterns = [
+      // Environment operations that can affect production
+      /environment:delete/i,
+      /environment:deploy/i,
+      /environment:redeploy/i,
+      /environment:merge/i,
+      /environment:pause/i,
+      /environment:push/i,
+      /environment:resume/i,
+      /environment:synchronize/i,
+      /environment:activate/i,
+      /environment:branch/i,
+      /environment:checkout/i,
+
+      // Backup operations
+      /backup:create/i,
+      /backup:delete/i,
+      /backup:restore/i,
+
+      // Database operations
+      /db:dump/i,
+      /db:sql/i,
+
+      // Domain operations
+      /domain:add/i,
+      /domain:delete/i,
+      /domain:update/i,
+
+      // Certificate operations
+      /certificate:add/i,
+      /certificate:delete/i,
+
+      // Project operations
+      /project:delete/i,
+      /project:create/i,
+
+      // User management
+      /user:add/i,
+      /user:delete/i,
+      /user:update/i,
+
+      // Variable operations
+      /variable:create/i,
+      /variable:delete/i,
+      /variable:update/i,
+
+      // Integration operations
+      /integration:add/i,
+      /integration:delete/i,
+      /integration:update/i,
+
+      // Organization operations
+      /organization:create/i,
+      /organization:delete/i,
+      /organization:billing:address/i,
+      /organization:billing:profile/i,
+
+      // Team operations
+      /team:create/i,
+      /team:delete/i,
+      /team:update/i,
+      /team:project:add/i,
+      /team:project:delete/i,
+      /team:user:add/i,
+      /team:user:delete/i,
+
+      // Service operations
+      /service:mongo:dump/i,
+      /service:mongo:restore/i,
+
+      // SSH operations to production environments
+      /ssh.*-e(prod|production|master|main)/i,
+      /-e(prod|production|master|main).*ssh/i,
+      /scp.*-e(prod|production|master|main)/i,
+      /-e(prod|production|master|main).*scp/i,
+
+      // Drush operations on production environments
+      /drush.*-e(prod|production|master|main)/i,
+      /-e(prod|production|master|main).*drush/i,
+      /environment:drush.*-e(prod|production|master|main)/i,
+
+      // Mount operations
+      /mount:download/i,
+      /mount:upload/i,
+
+      // Operation execution
+      /operation:run/i,
+
+      // Source operations
+      /source-operation:run/i,
+
+      // General dangerous patterns
+      /redeploy/i,
+      /delete/i,
+      /remove/i,
+      /destroy/i,
+      /wipe/i,
+      /clear.*cache/i,
+      /project:clear-build-cache/i
+    ];
+
+    return dangerousPatterns.some(pattern => pattern.test(command));
   }
 
   private formatToolResult(toolName: string, result: CommandResult): string {

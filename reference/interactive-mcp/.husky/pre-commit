@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Run lint-staged
+pnpm exec lint-staged
+
+# Check types (existing command)
+pnpm check-types
+
+# Exit with the status of the last command
+exit $?
