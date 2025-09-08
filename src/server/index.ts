@@ -226,14 +226,16 @@ export class DDEVMCPServer {
 
     // Check if the command is dangerous
     if (this.isDangerousPlatformCommand(command)) {
-      // Request user confirmation using the MCP user interaction tool
-      const confirmationResult = await this.ddevOps.requestUserInput({
-        message: `⚠️  DANGER: This Platform.sh command can affect production environments!\n\nCommand: "${command}"\nProject: ${args.projectPath}\n\nDo you want to proceed?`,
-        options: ['yes', 'no'],
-        timeout: 120 // 2 minutes for dangerous commands
+      // Use simple confirmation
+      const { confirmAction } = await import('../utils/userInput.js');
+      
+      const confirmed = await confirmAction({
+        message: `⚠️  DANGER: Platform.sh command can affect production!\n\nCommand: "${command}"\nProject: ${args.projectPath}`,
+        timeout: 300, // 5 minutes for dangerous commands
+        defaultYes: false
       });
 
-      if (!confirmationResult.success || !confirmationResult.output.includes('yes')) {
+      if (!confirmed) {
         return {
           success: false,
           exitCode: 1,

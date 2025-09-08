@@ -1,108 +1,53 @@
-import { spawn } from 'child_process';
-import fs from 'fs/promises';
-import path from 'path';
-import os from 'os';
-import crypto from 'crypto';
-
-export interface UserInputOptions {
+export interface ConfirmationOptions {
   message: string;
-  options?: string[];
   timeout?: number;
-}
-
-export interface UserInputResult {
-  success: boolean;
-  response?: string;
-  timedOut?: boolean;
-  error?: string;
+  defaultYes?: boolean;
 }
 
 /**
- * Display a user input prompt and wait for response
- * Based on interactive-mcp approach but simplified for our needs
+ * Simple yes/no confirmation function
+ * Perfect for dangerous operations and can be easily plugged into any DDEV tool
  */
-export async function getUserInput(options: UserInputOptions): Promise<UserInputResult> {
-  const { message, options: predefinedOptions = [], timeout = 60 } = options;
-
-  // Create temporary files for communication
-  const sessionId = crypto.randomBytes(8).toString('hex');
-  const tempDir = os.tmpdir();
-  const responseFile = path.join(tempDir, `ddev-mcp-response-${sessionId}.txt`);
-  const optionsFile = path.join(tempDir, `ddev-mcp-options-${sessionId}.json`);
+export async function confirmAction(options: ConfirmationOptions): Promise<boolean> {
+  const { message, timeout = 60, defaultYes = false } = options;
 
   try {
-    // Write options to file
-    const promptOptions = {
-      message,
-      predefinedOptions,
-      timeout,
-      responseFile,
-      sessionId
-    };
-
-    await fs.writeFile(optionsFile, JSON.stringify(promptOptions), 'utf8');
-
-    // Create empty response file
-    await fs.writeFile(responseFile, '', 'utf8');
-
-    // Use direct console approach for better reliability
+    const { createInterface } = await import('readline');
+    
+    // Display the prompt with consistent formatting
     console.log(`\n🔔 DDEV MCP User Input Required:`);
     console.log(`${message}`);
-    if (predefinedOptions.length > 0) {
-      console.log(`Options: ${predefinedOptions.join(', ')}`);
-    }
+    console.log(''); // Empty line for clarity
 
-    // Simple readline approach
-    const readline = require('readline');
-    const rl = readline.createInterface({
+    // Create readline interface
+    const rl = createInterface({
       input: process.stdin,
       output: process.stdout
     });
 
     return new Promise((resolve) => {
+      // Set up timeout
       const timer = setTimeout(() => {
         rl.close();
-        resolve({ success: false, timedOut: true });
+        resolve(defaultYes); // Return default on timeout
       }, timeout * 1000);
 
-      const promptText = predefinedOptions.length > 0
-        ? 'Your choice (number or custom text): '
-        : 'Your response: ';
-
+      // Simple yes/no prompt
+      const promptText = 'Type "y" to proceed, anything else to cancel: ';
+      
       rl.question(promptText, (answer: string) => {
         clearTimeout(timer);
         rl.close();
 
-        let finalAnswer = answer.trim();
-
-        // If user entered a number and we have predefined options, use that option
-        if (predefinedOptions.length > 0) {
-          const num = parseInt(finalAnswer);
-          if (!isNaN(num) && num >= 1 && num <= predefinedOptions.length) {
-            finalAnswer = predefinedOptions[num - 1];
-          }
-        }
-
-        resolve({ success: true, response: finalAnswer });
+        const response = answer.trim().toLowerCase();
+        const isYes = response === 'y' || response === 'yes';
+        
+        resolve(isYes);
       });
     });
 
   } catch (error) {
-    await cleanup();
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
-  }
-
-  async function cleanup() {
-    try {
-      await Promise.allSettled([
-        fs.unlink(responseFile).catch(() => {}),
-        fs.unlink(optionsFile).catch(() => {})
-      ]);
-    } catch {
-      // Ignore cleanup errors
-    }
+    // Return default on error
+    return defaultYes;
   }
 }

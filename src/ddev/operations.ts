@@ -1480,48 +1480,40 @@ export class DDEVOperations {
   }
 
   /**
-   * Request user input with optional predefined options
+   * Request user confirmation (yes/no)
    */
   async requestUserInput(options: {
     message: string;
     options?: string[];
     timeout?: number;
   }): Promise<CommandResult> {
-    const { message, options: userOptions = [], timeout = 30 } = options;
+    const { message, timeout = 30 } = options;
 
-    this.logger.info('Requesting user input', { message, options: userOptions, timeout });
+    this.logger.info('Requesting user confirmation', { message, timeout });
 
-    const { getUserInput } = await import('../utils/userInput.js');
+    const { confirmAction } = await import('../utils/userInput.js');
 
     const startTime = Date.now();
-    const result = await getUserInput({
+    const confirmed = await confirmAction({
       message,
-      options: userOptions,
-      timeout
+      timeout,
+      defaultYes: false
     });
     const duration = Date.now() - startTime;
 
-    if (result.success && result.response) {
+    if (confirmed) {
       return {
         success: true,
-        output: `User input: ${result.response}`,
+        output: 'User confirmed: yes',
         error: undefined,
         exitCode: 0,
-        duration
-      };
-    } else if (result.timedOut) {
-      return {
-        success: false,
-        output: 'User did not reply: Timeout occurred.',
-        error: 'User input timeout',
-        exitCode: 1,
         duration
       };
     } else {
       return {
         success: false,
-        output: 'User input failed',
-        error: result.error || 'Unknown error',
+        output: 'User confirmed: no',
+        error: 'User did not confirm',
         exitCode: 1,
         duration
       };

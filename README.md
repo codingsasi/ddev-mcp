@@ -478,9 +478,13 @@ MIT License - see LICENSE file for details.
 
 ## 📚 **Additional Resources**
 
-- **[Extending Guide](EXTENDING.md)** - How to add support for new CMS/frameworks
-- **[WordPress Examples](WORDPRESS_EXAMPLES.md)** - Comprehensive WordPress development workflows
-- **[Usage Examples](USAGE_EXAMPLES.md)** - Real-world development scenarios
+### **Documentation**
+- **[📁 Complete Documentation](docs/)** - All documentation in one place
+- **[Extending Guide](docs/EXTENDING.md)** - How to add support for new CMS/frameworks
+- **[WordPress Examples](docs/WORDPRESS_EXAMPLES.md)** - Comprehensive WordPress development workflows
+- **[Usage Examples](docs/USAGE_EXAMPLES.md)** - Real-world development scenarios
+
+### **External Resources**
 - **[DDEV CMS Quickstarts](https://docs.ddev.com/en/stable/users/quickstart/)** - Official DDEV project type documentation
 - **[Playwright Documentation](https://playwright.dev/docs/intro)** - Browser automation reference
 - **[DDEV Documentation](https://ddev.readthedocs.io/)** - Local development environment guide
