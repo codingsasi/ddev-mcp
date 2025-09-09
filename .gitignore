@@ -44,5 +44,4 @@ coverage/
 *.tmp
 *.temp
 
-# DDEV specific (for development)
-.ddev/
+*.tgz
