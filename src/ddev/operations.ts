@@ -1224,7 +1224,7 @@ export class DDEVOperations {
       projectPath: options.projectPath
     });
 
-    const args: string[] = ['playwright'];
+    const args: string[] = [];
 
     switch (action) {
       case 'test':
@@ -1261,7 +1261,7 @@ export class DDEVOperations {
       timeout: options.timeout || 120000
     };
 
-    return await this.commandExecutor.executeDDEV('exec', args, execOptions);
+    return await this.commandExecutor.executeDDEV('playwright', args, execOptions);
   }
 
   /**
@@ -1277,7 +1277,7 @@ export class DDEVOperations {
       projectPath: options.projectPath
     });
 
-    const args: string[] = ['playwright', 'install'];
+    const args: string[] = ['install'];
 
     if (options.browser) {
       args.push(options.browser);
@@ -1292,7 +1292,7 @@ export class DDEVOperations {
       timeout: options.timeout || 300000
     };
 
-    return await this.commandExecutor.executeDDEV('exec', args, execOptions);
+    return await this.commandExecutor.executeDDEV('playwright', args, execOptions);
   }
 
   // Enhanced WordPress operations
