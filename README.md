@@ -6,12 +6,13 @@ A **production-ready** Model Context Protocol (MCP) server that provides AI assi
 
 Supports all DDEV project types including Drupal, WordPress, Laravel, Symfony, TYPO3, CakePHP, Magento, and many more!
 
-## 🎯 **Perfect Companion to Playwright MCP**
+## 🎯 **Complete DDEV Development Automation**
 
-This DDEV MCP server is designed to work seamlessly with your existing Playwright MCP setup, creating a powerful development automation environment:
+This DDEV MCP server provides comprehensive development environment automation for any web project:
 
-- **DDEV MCP**: Environment management, database operations, CMS-specific workflows
-- **Combined**: Complete development lifecycle automation for any web project
+- **Environment Management**: Start, stop, restart DDEV projects
+- **Database Operations**: Import/export, snapshots, migrations
+- **CMS-Specific Workflows**: Drupal, WordPress, Laravel, and more
 
 ## ✨ **Features**
 
@@ -81,15 +82,11 @@ npm run dev
 
 ### MCP Client Configuration
 
-Add to your `~/.cursor/mcp.json` (alongside your working Playwright MCP):
+Add to your `~/.cursor/mcp.json`:
 
 ```json
 {
   "mcpServers": {
-    "playwright":
-      "command": "npx",
-      "args": ["@playwright/mcp@latest"]
-    },
     "ddev": {
       "command": "npx",
       "args": ["ddev-mcp"]
@@ -199,17 +196,17 @@ If you need to run commands in a different directory:
 "Execute doctrine:migrations:migrate via DDEV"
 ```
 
-### Combined Workflows (DDEV + Playwright MCP)
+### Advanced Workflows
 
 ```
-"DDEV MCP: Start fresh development environment with latest DB, then Playwright MCP: run smoke tests"
-"DDEV MCP: Enable debug mode and clear cache, then Playwright MCP: reproduce the login bug"
-"DDEV MCP: Import test data, then Playwright MCP: run end-to-end workflow tests"
+"DDEV MCP: Start fresh development environment with latest DB"
+"DDEV MCP: Enable debug mode and clear cache for debugging"
+"DDEV MCP: Import test data for testing"
 
 # Add-on specific workflows
 "DDEV MCP: Clear Redis cache and check memory usage"
 "DDEV MCP: Create new Solr core for testing, then query indexed content"
-"DDEV MCP: Install Playwright browsers, then run accessibility tests"
+"DDEV MCP: Install Playwright browsers for testing"
 
 # Directory navigation workflows
 "DDEV MCP: Go to my WordPress project at ~/Projects/mysite and start it"
@@ -293,7 +290,7 @@ If you need to run commands in a different directory:
 | `ddev_solr_admin` | Solr admin operations | `projectPath`, `action`, `core`, `configSet` |
 | `ddev_solr_query` | Execute Solr search queries | `projectPath`, `core`, `query`, `rows`, `fields` |
 
-#### **Playwright Testing**
+#### **Browser Testing**
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
 | `ddev_playwright` | Run Playwright commands | `projectPath`, `action`, `testFilter`, `browser`, `headed` |
@@ -403,7 +400,7 @@ Based on the [DDEV CMS Quickstarts](https://docs.ddev.com/en/stable/users/quicks
 
 ### Design Principles
 
-1. **Following Playwright MCP Patterns**: Proven architecture and error handling
+1. **Proven Architecture**: Robust error handling and reliable patterns
 2. **Official MCP SDK**: Using `@modelcontextprotocol/sdk` for reliability
 3. **Type Safety**: Full TypeScript implementation
 4. **Security**: Input validation and command sanitization
@@ -434,19 +431,15 @@ This project is designed for team collaboration with familiar JavaScript/TypeScr
 ```bash
 # Morning startup routine
 "DDEV MCP: Start development environment and import latest production data"
-"Playwright MCP: Navigate to site and take screenshot to verify"
 
 # Feature development
 "DDEV MCP: Enable new feature and clear cache"
-"Playwright MCP: Test the new feature functionality"
 
 # Bug investigation
 "DDEV MCP: Enable Xdebug and tail error logs"
-"Playwright MCP: Reproduce bug scenario and capture state"
 
 # Deployment preparation
 "DDEV MCP: Run database updates and build assets"
-"Playwright MCP: Run full regression test suite"
 ```
 
 ## 🔒 **Security Considerations**
@@ -501,7 +494,6 @@ MIT License - see LICENSE file for details.
 ## 🙏 **Acknowledgments**
 
 - Built with the official [Model Context Protocol SDK](https://github.com/modelcontextprotocol/typescript-sdk)
-- Inspired by the excellent [Playwright MCP server](https://github.com/microsoft/playwright-mcp)
 - Designed for [DDEV](https://ddev.readthedocs.io/) development environments
 
 ---
@@ -516,7 +508,6 @@ MIT License - see LICENSE file for details.
 
 ### **External Resources**
 - **[DDEV CMS Quickstarts](https://docs.ddev.com/en/stable/users/quickstart/)** - Official DDEV project type documentation
-- **[Playwright Documentation](https://playwright.dev/docs/intro)** - Browser automation reference
 - **[DDEV Documentation](https://ddev.readthedocs.io/)** - Local development environment guide
 
 **Ready to supercharge your DDEV development workflow with AI assistance for any web project!** 🚀

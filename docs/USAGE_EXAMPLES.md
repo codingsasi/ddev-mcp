@@ -2,53 +2,41 @@
 
 ## 🎯 **Real-World ddev Development Scenarios**
 
-Based on your successful Playwright MCP experience, here are practical examples of how DDEV MCP integrates with your workflow.
+Here are practical examples of how DDEV MCP integrates with your development workflow.
 
 ### **🌅 Morning Development Startup**
 
 ```bash
-# Combined DDEV + Playwright workflow
-"Use DDEV MCP to start ddev environment and import latest production database, then use Playwright MCP to verify the homepage loads correctly"
+# DDEV workflow
+"Use DDEV MCP to start ddev environment and import latest production database"
 ```
 
 **What happens:**
 1. DDEV MCP: `ddev start` in the project directory
 2. DDEV MCP: `ddev import-db --src=/path/to/latest-prod-dump.sql.gz`
-3. Playwright MCP: Navigate to `https://myproject.ddev.site`
-4. Playwright MCP: Take screenshot and verify page elements
 
 ### **🔧 Feature Development Cycle**
 
 ```bash
 # Enable new module and test
-"DDEV MCP: Enable the new custom module and clear Drupal cache, then Playwright MCP: test the dashboard workflow"
+"DDEV MCP: Enable the new custom module and clear Drupal cache"
 ```
 
 **DDEV MCP commands:**
 - `ddev drush en <module_name> -y`
 - `ddev drush cr`
 
-**Playwright MCP commands:**
-- Navigate to custom dashboard
-- Test user interactions
-- Capture screenshots of new features
-
 ### **🐛 Bug Investigation Workflow**
 
 ```bash
 # Debug mode + error reproduction
-"DDEV MCP: Enable Xdebug and tail error logs, then Playwright MCP: reproduce the login bug and show me the exact error state"
+"DDEV MCP: Enable Xdebug and tail error logs"
 ```
 
 **DDEV MCP sequence:**
 1. `ddev ssh` to enable Xdebug
 2. `ddev logs --follow --tail=50`
 3. Monitor for errors during reproduction
-
-**Playwright MCP sequence:**
-1. Navigate to login page
-2. Fill form with problematic credentials
-3. Capture error state and network requests
 
 ### **📊 Database Management**
 
@@ -77,22 +65,18 @@ ddev drush cim -y
 
 ```bash
 # Custom theme workflow
-"DDEV MCP: Build custom theme assets and restart services, then Playwright MCP: take before/after screenshots of the homepage"
+"DDEV MCP: Build custom theme assets and restart services"
 ```
 
 **DDEV MCP commands:**
 - `ddev ssh "cd themes/custom && npm run build"`
 - `ddev restart`
 
-**Playwright MCP commands:**
-- Screenshot comparison workflow
-- Test responsive breakpoints
-
 ### **🧪 Test Environment Setup**
 
 ```bash
 # Fresh test environment
-"DDEV MCP: Create clean test environment with test users, then Playwright MCP: run the complete test suite"
+"DDEV MCP: Create clean test environment with test users"
 ```
 
 **DDEV MCP preparation:**
@@ -102,16 +86,12 @@ ddev drush user:create testuser --mail=test@example.com --password=testpass  # C
 ddev drush cr
 ```
 
-**Playwright MCP execution:**
-- Run existing test suite from `test/playwright/tests/feature.spec.ts`
-- Generate test reports
-
-## 🎭 **Advanced Combined Workflows**
+## 🎭 **Advanced Workflows**
 
 ### **Performance Testing Pipeline**
 
 ```bash
-"DDEV MCP: Configure for performance testing with production-like settings, then Playwright MCP: run Lighthouse audits on key <project name> pages"
+"DDEV MCP: Configure for performance testing with production-like settings"
 ```
 
 **DDEV MCP setup:**
@@ -119,34 +99,27 @@ ddev drush cr
 - Enable production caching
 - Import large dataset
 
-**Playwright MCP testing:**
-- Lighthouse performance audits
-- Core Web Vitals measurement
-- Mobile vs desktop comparisons
-
 ### **Continuous Integration Simulation**
 
 ```bash
-"DDEV MCP: Run the complete CI pipeline locally - fresh DB, run updates, build assets, then Playwright MCP: execute full regression test suite"
+"DDEV MCP: Run the complete CI pipeline locally - fresh DB, run updates, build assets"
 ```
 
 **Full CI simulation:**
 1. **DDEV MCP**: Fresh environment setup
 2. **DDEV MCP**: Database import and updates
 3. **DDEV MCP**: Asset building
-4. **Playwright MCP**: Comprehensive testing
-5. **DDEV MCP**: Log collection and cleanup
+4. **DDEV MCP**: Log collection and cleanup
 
 ### **Release Preparation**
 
 ```bash
-"DDEV MCP: Prepare release environment with production data and run all updates, then Playwright MCP: verify all critical user journeys work correctly"
+"DDEV MCP: Prepare release environment with production data and run all updates"
 ```
 
 **Release checklist automation:**
 - Database migration testing
 - Configuration import/export
-- Critical path testing
 - Performance validation
 
 ## 📝 **Command Cheat Sheet**
@@ -174,32 +147,31 @@ ddev drush cr
 "Run Composer install"                           # ddev_composer install
 ```
 
-### **Integration with Playwright MCP**
+### **DDEV Operations**
 ```bash
-# Environment + Testing
-"DDEV MCP: [operation] then Playwright MCP: [test]"
+# Environment Management
+"DDEV MCP: [operation]"
 
 # Error Investigation
-"DDEV MCP: [debug setup] then Playwright MCP: [reproduce issue]"
+"DDEV MCP: [debug setup]"
 
 # Feature Validation
-"DDEV MCP: [deploy change] then Playwright MCP: [verify functionality]"
+"DDEV MCP: [deploy change]"
 ```
 
 ## 🚀 **Getting Started**
 
-1. **Ensure your Playwright MCP is working** (you already have this!)
-2. **Add DDEV MCP to your `~/.cursor/mcp.json`**
-3. **Restart Cursor** to load both MCP servers
-4. **Try a simple command**: `"Use DDEV MCP to get the status of my project"`
-5. **Combine with Playwright**: `"DDEV MCP: start project, then Playwright MCP: take screenshot"`
+1. **Add DDEV MCP to your `~/.cursor/mcp.json`**
+2. **Restart Cursor** to load the MCP server
+3. **Try a simple command**: `"Use DDEV MCP to get the status of my project"`
+4. **Start your project**: `"DDEV MCP: start project"`
 
 ## 💡 **Pro Tips**
 
 - **Use specific project paths** when working with multiple DDEV projects
 - **Combine operations** for efficient workflows
 - **Monitor logs** during complex operations
-- **Test in isolation** before combining with Playwright MCP
+- **Test in isolation** before complex operations
 - **Use timeouts** for long-running database operations
 
 **Your DDEV MCP server is ready to supercharge your ddev development workflow!** 🎉

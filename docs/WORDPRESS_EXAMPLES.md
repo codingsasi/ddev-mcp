@@ -122,41 +122,36 @@ Your DDEV MCP server now includes comprehensive WordPress support through WP-CLI
 "Run 'wp media regenerate' using DDEV MCP to rebuild thumbnails"
 ```
 
-## 🎭 **Combined DDEV + Playwright WordPress Workflows**
+## 🎭 **Advanced WordPress Workflows**
 
-### **E-commerce Site Testing**
+### **E-commerce Site Setup**
 ```bash
-"DDEV MCP: Install and activate WooCommerce, then Playwright MCP: test the checkout process"
+"DDEV MCP: Install and activate WooCommerce and run setup wizard"
 ```
 
 **Detailed workflow:**
 1. **DDEV MCP**: Install WooCommerce plugin
 2. **DDEV MCP**: Activate WooCommerce
 3. **DDEV MCP**: Run WooCommerce setup wizard via WP-CLI
-4. **Playwright MCP**: Navigate to shop page
-5. **Playwright MCP**: Test add to cart functionality
-6. **Playwright MCP**: Complete checkout process test
 
-### **Content Migration Testing**
+### **Content Migration Workflow**
 ```bash
-"DDEV MCP: Import production database and update URLs, then Playwright MCP: verify all pages load correctly"
+"DDEV MCP: Import production database and update URLs"
 ```
 
 **Migration validation:**
 1. **DDEV MCP**: Import production database
 2. **DDEV MCP**: Search/replace production URLs with local URLs
 3. **DDEV MCP**: Flush rewrite rules
-4. **Playwright MCP**: Crawl site and check for broken links
-5. **Playwright MCP**: Test contact forms and functionality
 
 ### **Plugin Development Workflow**
 ```bash
-"DDEV MCP: Activate my custom plugin and flush rewrites, then Playwright MCP: test the new functionality"
+"DDEV MCP: Activate my custom plugin and flush rewrites"
 ```
 
 ### **Performance Optimization**
 ```bash
-"DDEV MCP: Install caching plugins and optimize database, then Playwright MCP: run Lighthouse performance tests"
+"DDEV MCP: Install caching plugins and optimize database"
 ```
 
 ## 📝 **WordPress Command Cheat Sheet**
@@ -238,20 +233,16 @@ Your DDEV MCP server now includes comprehensive WordPress support through WP-CLI
 1. **Start Environment**: `"DDEV MCP: Start WordPress project"`
 2. **Get Site Info**: `"DDEV MCP: Get WordPress site information"`
 3. **Install Dependencies**: `"DDEV MCP: Install required plugins"`
-4. **Test Changes**: `"Playwright MCP: Test functionality"`
-5. **Database Updates**: `"DDEV MCP: Search/replace URLs if needed"`
+4. **Database Updates**: `"DDEV MCP: Search/replace URLs if needed"`
 
 ### **Plugin Testing**
 1. **Clean Environment**: Fresh DDEV start
 2. **Install Plugin**: Via DDEV MCP
 3. **Activate Plugin**: Via DDEV MCP
-4. **Test Functionality**: Via Playwright MCP
-5. **Check for Conflicts**: Test with other plugins
+4. **Check for Conflicts**: Test with other plugins
 
 ### **Theme Development**
 1. **Install Base Theme**: Via DDEV MCP
 2. **Activate Theme**: Via DDEV MCP
-3. **Visual Testing**: Via Playwright MCP screenshots
-4. **Responsive Testing**: Via Playwright MCP viewports
 
 **Your DDEV MCP server now supports both Drupal AND WordPress development workflows!** 🎉

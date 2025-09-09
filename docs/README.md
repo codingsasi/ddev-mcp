@@ -30,7 +30,6 @@ This folder contains comprehensive documentation for the DDEV MCP server.
 ## 📖 External Resources
 
 - **[DDEV CMS Quickstarts](https://docs.ddev.com/en/stable/users/quickstart/)** - Official DDEV project type documentation
-- **[Playwright Documentation](https://playwright.dev/docs/intro)** - Browser automation reference
 - **[DDEV Documentation](https://ddev.readthedocs.io/)** - Local development environment guide
 
 ---

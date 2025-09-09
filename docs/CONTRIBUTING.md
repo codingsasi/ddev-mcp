@@ -176,7 +176,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - Built with the official [Model Context Protocol SDK](https://github.com/modelcontextprotocol/typescript-sdk)
-- Inspired by [Playwright MCP server](https://github.com/microsoft/playwright-mcp)
 - Designed for [DDEV](https://ddev.readthedocs.io/) development environments
 
 ---
