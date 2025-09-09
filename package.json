@@ -36,7 +36,7 @@
     "playwright"
   ],
   "author": "Abhai Sasidharan <mail@abh.ai> (https://abh.ai)",
-  "license": "MIT",
+  "license": "GPL-2.0-only",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codingsasi/ddev-mcp.git"
@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/codingsasi/ddev-mcp#readme",
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=20.0.0"
   },
   "files": [
     "dist/**/*",

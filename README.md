@@ -39,11 +39,12 @@ This DDEV MCP server is designed to work seamlessly with your existing Playwrigh
 - Input validation and sanitization
 - Configurable timeouts and security measures
 - TypeScript for type safety
+- **Dangerous Command Protection**: Built-in safety system for production-affecting commands
 
 ## 📦 **Installation**
 
 ### Prerequisites
-- Node.js 20+
+- **Node.js 20+** (Node.js 22+ preferred for best performance)
 - DDEV installed and available in PATH
 - TypeScript knowledge for team contributions
 
@@ -59,6 +60,12 @@ npx @codingsasi/ddev-mcp --help
 # Verify installation
 ddev-mcp --version
 ```
+
+### Node.js Version Requirements
+
+- **Minimum**: Node.js 20.0.0+
+- **Recommended**: Node.js 22.0.0+ (for best performance and latest features)
+- **Check your version**: `node --version`
 
 ### Development Setup
 
@@ -101,7 +108,30 @@ export DDEV_PROJECT_PATH="/path/to/your/ddev/project"
 
 # Optional: Configure logging level
 export DDEV_MCP_LOG_LEVEL="DEBUG"
+
+# Safety: Allow dangerous commands (default: false)
+export ALLOW_DANGEROUS_COMMANDS="true"
 ```
+
+### 🛡️ **Dangerous Command Protection**
+
+The DDEV MCP server includes built-in protection against dangerous commands that could affect production environments:
+
+- **Platform.sh commands** like `environment:redeploy`, `environment:delete` are blocked by default
+- **Database operations** that could delete data are protected
+- **File operations** that could remove important files are safeguarded
+
+#### **Enabling Dangerous Commands**
+
+To allow dangerous commands (use with caution):
+
+```bash
+export ALLOW_DANGEROUS_COMMANDS="true"
+```
+
+#### **Adding New Dangerous Commands**
+
+Contributors can easily add dangerous command patterns in `src/config/dangerous-commands.ts`. See [DANGEROUS_COMMANDS.md](docs/DANGEROUS_COMMANDS.md) for detailed instructions.
 
 ### Simple Directory Handling
 

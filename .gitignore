@@ -44,8 +44,5 @@ coverage/
 *.tmp
 *.temp
 
-# Package manager files
-package-lock.json
-
 # DDEV specific (for development)
 .ddev/

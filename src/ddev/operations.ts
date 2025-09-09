@@ -1479,46 +1479,6 @@ export class DDEVOperations {
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
   }
 
-  /**
-   * Request user confirmation (yes/no)
-   */
-  async requestUserInput(options: {
-    message: string;
-    options?: string[];
-    timeout?: number;
-  }): Promise<CommandResult> {
-    const { message, timeout = 30 } = options;
-
-    this.logger.info('Requesting user confirmation', { message, timeout });
-
-    const { confirmAction } = await import('../utils/userInput.js');
-
-    const startTime = Date.now();
-    const confirmed = await confirmAction({
-      message,
-      timeout,
-      defaultYes: false
-    });
-    const duration = Date.now() - startTime;
-
-    if (confirmed) {
-      return {
-        success: true,
-        output: 'User confirmed: yes',
-        error: undefined,
-        exitCode: 0,
-        duration
-      };
-    } else {
-      return {
-        success: false,
-        output: 'User confirmed: no',
-        error: 'User did not confirm',
-        exitCode: 1,
-        duration
-      };
-    }
-  }
 
   /**
    * Send a notification to the user
