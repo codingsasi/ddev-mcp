@@ -52,10 +52,10 @@ This DDEV MCP server is designed to work seamlessly with your existing Playwrigh
 
 ```bash
 # Install globally
-npm install -g @codingsasi/ddev-mcp
+npm install -g ddev-mcp
 
 # Or run directly with npx
-npx @codingsasi/ddev-mcp --help
+npx ddev-mcp --help
 
 # Verify installation
 ddev-mcp --version
@@ -92,7 +92,7 @@ Add to your `~/.cursor/mcp.json` (alongside your working Playwright MCP):
     },
     "ddev": {
       "command": "npx",
-      "args": ["@codingsasi/ddev-mcp"]
+      "args": ["ddev-mcp"]
     }
   }
 }

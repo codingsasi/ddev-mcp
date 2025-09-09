@@ -1,10 +1,8 @@
 {
   "mcpServers": {
     "ddev": {
-      "command": "node",
-      "args": [
-        "/path/to/your/ddev-mcp/dist/index.js"
-      ],
+      "command": "npx",
+      "args": ["ddev-mcp"],
       "env": {
         "DDEV_MCP_LOG_LEVEL": "INFO"
       },

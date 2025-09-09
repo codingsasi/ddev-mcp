@@ -1,14 +1,10 @@
 {
   "mcpServers": {
     "ddev": {
-      "command": "node",
-      "args": [
-        "/path/to/your/ddev-mcp/dist/index.js"
-      ],
+      "command": "npx",
+      "args": ["ddev-mcp"],
       "env": {
-        "DDEV_MCP_LOG_LEVEL": "INFO",
-        "NODE_ENV": "production",
-        "DDEV_MCP_TOOL_TIMEOUT": "300000"
+        "DDEV_MCP_LOG_LEVEL": "INFO"
       },
       "timeout": 30000
     }
