@@ -487,10 +487,6 @@ The `ddev_platform` tool includes built-in safety measures to prevent accidental
 - Check project path accessibility
 - Verify Docker daemon is running
 
-## 📄 **License**
-
-MIT License - see LICENSE file for details.
-
 ## 🙏 **Acknowledgments**
 
 - Built with the official [Model Context Protocol SDK](https://github.com/modelcontextprotocol/typescript-sdk)

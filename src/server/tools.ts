@@ -78,7 +78,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_status',
-    description: 'Get the status of a DDEV project',
+    description: 'Get the status of a DDEV project. Same as ddev describe.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -97,7 +97,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_describe',
-    description: 'Get detailed information about a DDEV project',
+    description: 'Get detailed information about a DDEV project. Same as ddev status.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -541,7 +541,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
   // Service management
   {
     name: 'ddev_exec',
-    description: 'Execute any command in a DDEV service container (most flexible tool for any operation)',
+    description: 'Execute any command in a DDEV service container (a flexible tool for any operation). Use this when other tools are not sufficient. Dangerous commands blocked unless ALLOW_DANGEROUS_COMMANDS=true.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -551,7 +551,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         },
         command: {
           type: 'string',
-          description: 'Command to execute (e.g., "drush cr", "composer install", "npm run build", "redis-cli ping", "curl http://solr:8983/solr/")'
+          description: 'Command to execute (e.g., "drush cr", "composer install", "npm run build", "redis-cli ping", "curl http://solr:8983/solr/"). Dangerous commands are blocked unless ALLOW_DANGEROUS_COMMANDS=true.'
         },
         service: {
           type: 'string',

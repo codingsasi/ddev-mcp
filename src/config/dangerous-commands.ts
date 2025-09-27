@@ -119,6 +119,103 @@ export const DANGEROUS_COMMANDS: DangerousCommandConfig[] = [
     ]
   },
 
+  {
+    toolName: 'ddev_exec',
+    description: 'Execute arbitrary commands in DDEV containers (can be dangerous)',
+    commandParam: 'command',
+    dangerousPatterns: [
+      // Platform.sh production environment commands
+      /platform.*-e(prod|production|master|main)/i,
+      /-e(prod|production|master|main).*platform/i,
+      /platform.*environment:redeploy/i,
+      /platform.*environment:delete/i,
+      /platform.*environment:deploy/i,
+      /platform.*environment:merge/i,
+      /platform.*environment:push/i,
+      /platform.*environment:synchronize/i,
+      /platform.*environment:activate/i,
+      /platform.*environment:branch/i,
+      /platform.*environment:checkout/i,
+      /platform.*backup:create/i,
+      /platform.*backup:delete/i,
+      /platform.*backup:restore/i,
+      /platform.*db:dump/i,
+      /platform.*db:sql/i,
+      /platform.*domain:add/i,
+      /platform.*domain:delete/i,
+      /platform.*domain:update/i,
+      /platform.*certificate:add/i,
+      /platform.*certificate:delete/i,
+      /platform.*project:delete/i,
+      /platform.*project:create/i,
+      /platform.*user:add/i,
+      /platform.*user:delete/i,
+      /platform.*user:update/i,
+      /platform.*variable:create/i,
+      /platform.*variable:delete/i,
+      /platform.*variable:update/i,
+      /platform.*integration:add/i,
+      /platform.*integration:delete/i,
+      /platform.*integration:update/i,
+      /platform.*organization:create/i,
+      /platform.*organization:delete/i,
+      /platform.*team:create/i,
+      /platform.*team:delete/i,
+      /platform.*team:update/i,
+      /platform.*service:mongo:dump/i,
+      /platform.*service:mongo:restore/i,
+      /platform.*mount:download/i,
+      /platform.*mount:upload/i,
+      /platform.*operation:run/i,
+      /platform.*source-operation:run/i,
+
+      // Drush production environment commands
+      /drush.*-e(prod|production|master|main)/i,
+      /-e(prod|production|master|main).*drush/i,
+      /drush.*@prod/i,
+      /drush.*@production/i,
+      /drush.*@master/i,
+      /drush.*@main/i,
+      /@prod.*drush/i,
+      /@production.*drush/i,
+      /@master.*drush/i,
+      /@main.*drush/i,
+
+      // WP-CLI production environment commands
+      /wp.*--url=.*prod/i,
+      /wp.*--url=.*production/i,
+      /wp.*--url=.*master/i,
+      /wp.*--url=.*main/i,
+
+      // Git operations that can affect production
+      /git\s+push\s+origin\s+(prod|production|master|main)/i,
+      /git\s+push\s+(prod|production|master|main)/i,
+      /git\s+push.*-f/i,
+      /git\s+push.*--force/i,
+
+      // SSH/SCP to production environments
+      /ssh.*-e(prod|production|master|main)/i,
+      /-e(prod|production|master|main).*ssh/i,
+      /scp.*-e(prod|production|master|main)/i,
+      /-e(prod|production|master|main).*scp/i,
+      /ssh.*@prod/i,
+      /ssh.*@production/i,
+      /ssh.*@master/i,
+      /ssh.*@main/i,
+      /@prod.*ssh/i,
+      /@production.*ssh/i,
+      /@master.*ssh/i,
+      /@main.*ssh/i,
+
+      // Database operations on production
+      /mysql.*-h.*prod/i,
+      /mysql.*-h.*production/i,
+      /mysqldump.*-h.*prod/i,
+      /mysqldump.*-h.*production/i,
+
+    ]
+  },
+
   // Example: Future tool that might have dangerous commands
   // {
   //   toolName: 'ddev_database',
