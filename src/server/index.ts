@@ -157,8 +157,6 @@ export class DDEVMCPServer {
         return await this.ddevOps.clean(args);
       case 'ddev_snapshot':
         return await this.ddevOps.snapshot(args);
-      case 'ddev_import_files':
-        return await this.ddevOps.importFiles(args);
       case 'ddev_debug':
         return await this.ddevOps.debug(args);
       case 'ddev_exec':
@@ -173,8 +171,6 @@ export class DDEVMCPServer {
         return await this.ddevOps.poweroff(args);
       case 'ddev_version':
         return await this.ddevOps.version(args);
-      case 'ddev_go_to_project_directory':
-        return await this.ddevOps.changeDirectory(args);
       case 'ddev_redis_cli':
         return await this.ddevOps.redisCli(args);
       case 'ddev_redis_info':
@@ -187,10 +183,6 @@ export class DDEVMCPServer {
         return await this.ddevOps.mysql(args);
       case 'ddev_platform':
         return await this.ddevOps.platform(args);
-      case 'ddev_playwright':
-        return await this.ddevOps.playwright(args);
-      case 'ddev_playwright_install':
-        return await this.ddevOps.playwrightInstall(args);
       case 'ddev_wp_cli':
         return await this.ddevOps.wpCli(args);
       case 'ddev_wp_site_info':

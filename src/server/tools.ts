@@ -208,7 +208,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_drush',
-    description: 'Execute Drush commands in DDEV environment',
+    description: 'Execute Drush commands in DDEV environment. Drush is the command-line shell and scripting interface for Drupal. Common commands include: "status" (show Drupal site status), "cr" or "cache:rebuild" (clear and rebuild Drupal cache), "uli" or "user:login" (generate one-time login link), "cex" or "config:export" (export configuration), "cim" or "config:import" (import configuration), "pm:list" (list modules), "pm:install" (install modules), "pm:uninstall" (uninstall modules), "updb" or "updatedb" (run database updates), "sql:dump" (export database), "sql:query" (execute SQL query). Use "drush list" to see all available commands or "drush help <command>" to get help for a specific command. This tool executes Drush commands inside the DDEV web container.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -218,20 +218,20 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         },
         command: {
           type: 'string',
-          description: 'Drush command to execute'
+          description: 'Drush command to execute (e.g., "status", "cr", "uli", "cex", "cim", "updb", "pm:list", "pm:install <module>", "sql:dump"). Use "list" to see all available commands or "help <command>" for command-specific help.'
         },
         args: {
           type: 'array',
           items: { type: 'string' },
-          description: 'Additional arguments for the Drush command'
+          description: 'Additional arguments for the Drush command (e.g., ["--yes", "--skip-modules=devel"] for pm:install)'
         },
         uri: {
           type: 'string',
-          description: 'URI for multisite Drupal installations'
+          description: 'URI for multisite Drupal installations (e.g., "https://example.com" or "default")'
         },
         root: {
           type: 'string',
-          description: 'Drupal root path'
+          description: 'Drupal root path (relative to project root, defaults to docroot/web)'
         },
         timeout: {
           type: 'number',
@@ -294,30 +294,6 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         tail: {
           type: 'number',
           description: 'Number of lines to tail'
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 30000
-        }
-      }
-    }
-  },
-
-  {
-    name: 'ddev_ssh',
-    description: 'Get SSH connection info and container details (AI-friendly)',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        projectPath: {
-          type: 'string',
-          description: 'Path to the DDEV project directory'
-        },
-        service: {
-          type: 'string',
-          description: 'Service to get SSH info for (default: web)',
-          default: 'web'
         },
         timeout: {
           type: 'number',
@@ -480,38 +456,6 @@ export const DDEV_TOOLS: ToolDefinition[] = [
     }
   },
 
-  // File operations
-  {
-    name: 'ddev_import_files',
-    description: 'Import files directory or archive to DDEV project',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        projectPath: {
-          type: 'string',
-          description: 'Path to the DDEV project directory'
-        },
-        src: {
-          type: 'string',
-          description: 'Source directory or archive (.tar, .tar.gz, .tar.bz2, .tar.xz, .tgz, .zip) to import'
-        },
-        target: {
-          type: 'string',
-          description: 'Target upload directory (defaults to first upload dir)'
-        },
-        extractPath: {
-          type: 'string',
-          description: 'Path to extract within the archive'
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 300000
-        }
-      },
-      required: ['src']
-    }
-  },
 
   // Debugging and diagnostics
   {
@@ -541,7 +485,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
   // Service management
   {
     name: 'ddev_exec',
-    description: 'Execute any command in a DDEV service container (a flexible tool for any operation). Use this when other tools are not sufficient. Dangerous commands blocked unless ALLOW_DANGEROUS_COMMANDS=true.',
+    description: 'Execute any command in a DDEV service container (a flexible tool for custom operations). Use this for project-specific tools that don\'t have dedicated MCP tools. This is the recommended approach for testing frameworks like Playwright, Cypress, or other custom commands, as each project may have different configurations and setups. Examples: "playwright test", "npm run test:e2e", "npm run build", "redis-cli ping", "curl http://solr:8983/solr/". Note: For Drush commands, use ddev_drush. For Composer commands, use ddev_composer. Dangerous commands blocked unless ALLOW_DANGEROUS_COMMANDS=true.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -551,12 +495,11 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         },
         command: {
           type: 'string',
-          description: 'Command to execute (e.g., "drush cr", "composer install", "npm run build", "redis-cli ping", "curl http://solr:8983/solr/"). Dangerous commands are blocked unless ALLOW_DANGEROUS_COMMANDS=true.'
+          description: 'Command to execute. Examples: "playwright test" (run Playwright tests), "npm run test:e2e" (run E2E tests), "npm run build" (build assets), "redis-cli ping" (test Redis), "curl http://solr:8983/solr/" (test Solr). For Drush commands, use ddev_drush. For Composer commands, use ddev_composer. Dangerous commands are blocked unless ALLOW_DANGEROUS_COMMANDS=true.'
         },
         service: {
           type: 'string',
-          description: 'Service to execute in: web (default), db, redis, solr, or any other service. AUTO-ROUTING: drush/composer/npm/php commands → web, mysql/mariadb commands → db, redis-cli commands → redis, solr commands → solr',
-          default: 'web'
+          description: 'Service to execute in: web (default), db, redis, solr, or any other service. AUTO-ROUTING: npm/php commands → web, mysql/mariadb commands → db, redis-cli commands → redis, solr commands → solr'
         },
         workdir: {
           type: 'string',
@@ -680,31 +623,6 @@ export const DDEV_TOOLS: ToolDefinition[] = [
     }
   },
 
-  // Directory navigation
-  {
-    name: 'ddev_go_to_project_directory',
-    description: 'Navigate to a DDEV project directory and verify it contains a valid DDEV configuration',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        path: {
-          type: 'string',
-          description: 'Path to the DDEV project directory to navigate to'
-        },
-        verify: {
-          type: 'boolean',
-          description: 'Verify the directory contains a valid DDEV project',
-          default: true
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 30000
-        }
-      },
-      required: ['path']
-    }
-  },
 
   // Add-on and service-specific tools
 
@@ -760,7 +678,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
   // Native service commands
   {
     name: 'ddev_solr',
-    description: 'Execute native DDEV Solr commands',
+    description: 'Execute native DDEV Solr commands. Solr is a search engine that can be used with Drupal Search API. Common commands include: "status" (show Solr server status and node information), "healthcheck -c <corename>" (check health of a specific Solr core/collection), "create -c <corename> -n <configname> -shards 1 -replicationFactor 1" (create a new Solr core/collection), "delete -c <corename>" (delete a Solr core/collection), "version" (show Solr version), "restart" (restart Solr service). This tool executes Solr CLI commands inside the DDEV Solr container. Use "ddev solr --help" to see all available commands.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -770,7 +688,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         },
         command: {
           type: 'string',
-          description: 'Solr command (e.g., "status", "create -c corename -n configname -shards 1 -replicationFactor 1", "delete -c corename")',
+          description: 'Solr command to execute. Examples: "status" (default), "healthcheck -c solrmaincore" (check core health), "create -c mycore -n myconfig -shards 1 -replicationFactor 1" (create core), "delete -c mycore" (delete core), "version" (show version). Use "ddev solr --help" to see all available commands.',
           default: 'status'
         },
         timeout: {
@@ -785,7 +703,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_solr_zk',
-    description: 'Execute DDEV Solr ZooKeeper commands',
+    description: 'Execute DDEV Solr ZooKeeper commands. ZooKeeper is used by SolrCloud to manage configuration and coordination. Common commands include: "ls /collections" (list all Solr collections/cores, default), "ls /configs" (list configuration sets), "upconfig -d <configdir> -n <configname>" (upload a configuration set to ZooKeeper), "downconfig -n <configname> -d <configdir>" (download a configuration set), "rm /collections/<collectionname>" (remove a collection from ZooKeeper). This tool executes Solr ZooKeeper CLI commands inside the DDEV Solr container. Use "ddev solr-zk --help" to see all available commands.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -795,7 +713,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         },
         command: {
           type: 'string',
-          description: 'ZooKeeper command (e.g., "ls /collections", "ls /configs", "upconfig -d configdir -n configname")',
+          description: 'ZooKeeper command to execute. Examples: "ls /collections" (list collections, default), "ls /configs" (list config sets), "upconfig -d configdir -n configname" (upload config), "downconfig -n configname -d configdir" (download config), "rm /collections/collectionname" (remove collection). Use "ddev solr-zk --help" to see all available commands.',
           default: 'ls /collections'
         },
         timeout: {
@@ -810,7 +728,7 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_mysql',
-    description: 'Execute MySQL/MariaDB commands in database container',
+    description: 'Execute MySQL/MariaDB SQL queries in the DDEV database container. This tool allows you to run SQL queries directly against your DDEV project database. Common queries include: "SHOW DATABASES" (list all databases, default), "SHOW TABLES" (list tables in current database), "SELECT * FROM users LIMIT 10" (query data from a table), "DESCRIBE tablename" (show table structure), "SELECT VERSION()" (show database version), "SHOW PROCESSLIST" (show active connections), "SELECT COUNT(*) FROM tablename" (count rows). This tool executes SQL queries inside the DDEV database container using the mysql/mariadb client. The query is executed against the specified database (defaults to "db"). Use standard SQL syntax for your queries.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -820,12 +738,12 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         },
         query: {
           type: 'string',
-          description: 'SQL query to execute (e.g., "SHOW DATABASES", "SELECT * FROM users LIMIT 10")',
+          description: 'SQL query to execute. Examples: "SHOW DATABASES" (default), "SHOW TABLES" (list tables), "SELECT * FROM users LIMIT 10" (query data), "DESCRIBE tablename" (table structure), "SELECT VERSION()" (database version), "SHOW PROCESSLIST" (active connections). Use standard SQL syntax.',
           default: 'SHOW DATABASES'
         },
         database: {
           type: 'string',
-          description: 'Database name to use (defaults to project database)',
+          description: 'Database name to use (defaults to "db", which is the standard DDEV project database name)',
           default: 'db'
         },
         timeout: {
@@ -864,73 +782,6 @@ export const DDEV_TOOLS: ToolDefinition[] = [
     }
   },
 
-  // Playwright operations
-  {
-    name: 'ddev_playwright',
-    description: 'Execute Playwright commands for browser testing (AI-friendly, non-interactive)',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        projectPath: {
-          type: 'string',
-          description: 'Path to the DDEV project directory'
-        },
-        action: {
-          type: 'string',
-          description: 'Playwright action to perform',
-          enum: ['test', 'install', 'show-report', 'list-browsers', 'version'],
-          default: 'version'
-        },
-        testFilter: {
-          type: 'string',
-          description: 'Test filter pattern (for test action)'
-        },
-        browser: {
-          type: 'string',
-          description: 'Browser to use (chromium, firefox, webkit)',
-          enum: ['chromium', 'firefox', 'webkit']
-        },
-        headed: {
-          type: 'boolean',
-          description: 'Run tests in headed mode',
-          default: false
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 120000
-        }
-      }
-    }
-  },
-
-  {
-    name: 'ddev_playwright_install',
-    description: 'Install Playwright browsers and dependencies',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        projectPath: {
-          type: 'string',
-          description: 'Path to the DDEV project directory'
-        },
-        browser: {
-          type: 'string',
-          description: 'Specific browser to install (leave empty for all)'
-        },
-        withDeps: {
-          type: 'boolean',
-          description: 'Install system dependencies',
-          default: false
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 300000
-        }
-      }
-    }
-  },
   // WordPress-specific tools
   {
     name: 'ddev_wp_cli',

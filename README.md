@@ -1,6 +1,6 @@
 # DDEV MCP
 
-A **production-ready** Model Context Protocol (MCP) server that provides AI assistants with comprehensive DDEV development environment automation. Built with TypeScript using the official MCP SDK.
+A **production-ready** Model Context Protocol (MCP) server that provides AI assistants with DDEV development environment automation. Built with TypeScript using the official MCP SDK.
 
 **🚀 47+ Tools for Complete DDEV Automation**
 
@@ -206,7 +206,7 @@ If you need to run commands in a different directory:
 # Add-on specific workflows
 "DDEV MCP: Clear Redis cache and check memory usage"
 "DDEV MCP: Create new Solr core for testing, then query indexed content"
-"DDEV MCP: Install Playwright browsers for testing"
+"DDEV MCP: Run custom commands using ddev exec"
 
 # Directory navigation workflows
 "DDEV MCP: Go to my WordPress project at ~/Projects/mysite and start it"
@@ -247,17 +247,19 @@ If you need to run commands in a different directory:
 | `ddev_ssh` | SSH into container | `projectPath`, `command`, `service` |
 | `ddev_exec` | Execute command in container | `projectPath`, `command`, `service`, `workdir` |
 
-### **File Operations**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_import_files` | Import files directory | `projectPath`, `src`, `extractPath` |
-
 ### **Development Tools**
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
 | `ddev_composer` | Execute Composer commands | `projectPath`, `command`, `args` |
 | `ddev_drush` | Execute Drush commands (Drupal) | `projectPath`, `command`, `args` |
 | `ddev_debug` | Run debugging commands | `projectPath`, `command` |
+| `ddev_exec` | Execute any command in container | `projectPath`, `command`, `service`, `workdir` |
+
+> **Note on Custom Commands**: For project-specific tools like Playwright, Cypress, or other testing frameworks, use `ddev_exec` instead of dedicated tools. This approach is more reliable because:
+> - Each project may have different configurations and setups
+> - Custom commands can be executed directly without abstraction overhead
+> - Better control over timeouts and execution context
+> - Example: `ddev_exec` with `command: "playwright test"` or `command: "npm run test:e2e"`
 
 ### **Sharing & Networking**
 | Tool | Description | Key Parameters |
@@ -289,12 +291,6 @@ If you need to run commands in a different directory:
 |------|-------------|----------------|
 | `ddev_solr_admin` | Solr admin operations | `projectPath`, `action`, `core`, `configSet` |
 | `ddev_solr_query` | Execute Solr search queries | `projectPath`, `core`, `query`, `rows`, `fields` |
-
-#### **Browser Testing**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_playwright` | Run Playwright commands | `projectPath`, `action`, `testFilter`, `browser`, `headed` |
-| `ddev_playwright_install` | Install Playwright browsers | `projectPath`, `browser`, `withDeps` |
 
 ### **CMS-Specific Tools**
 
@@ -354,13 +350,6 @@ npm run dev
 npm run clean
 ```
 
-### Code Quality
-
-- **TypeScript**: Full type safety and IntelliSense support
-- **ESLint**: Code quality and consistency
-- **Jest**: Comprehensive test coverage
-- **Logging**: Structured logging with configurable levels
-
 ## 🔧 **Architecture**
 
 ### Project Structure
@@ -387,9 +376,6 @@ Based on the [DDEV CMS Quickstarts](https://docs.ddev.com/en/stable/users/quicks
 **Content Management Systems:**
 - Backdrop, Drupal, WordPress, TYPO3, Joomla, ProcessWire
 
-**E-commerce Platforms:**
-- Magento 2, OpenMage, Shopware
-
 **PHP Frameworks:**
 - Laravel, Symfony, CakePHP, Pimcore, Sulu
 
@@ -398,13 +384,6 @@ Based on the [DDEV CMS Quickstarts](https://docs.ddev.com/en/stable/users/quicks
 
 **And more!** The architecture supports any DDEV project type through generic commands and extensible CMS-specific integrations.
 
-### Design Principles
-
-1. **Proven Architecture**: Robust error handling and reliable patterns
-2. **Official MCP SDK**: Using `@modelcontextprotocol/sdk` for reliability
-3. **Type Safety**: Full TypeScript implementation
-4. **Security**: Input validation and command sanitization
-5. **Observability**: Comprehensive logging and error reporting
 
 ## 🤝 **Contributing**
 
@@ -413,7 +392,7 @@ This project is designed for team collaboration with familiar JavaScript/TypeScr
 1. **Fork and Clone**: Standard GitHub workflow
 2. **Install Dependencies**: `npm install`
 3. **Make Changes**: Follow existing patterns
-4. **Test**: `npm test` and manual testing
+4. **Test**: Manually
 5. **Submit PR**: With clear description
 
 ### Coding Standards
@@ -468,39 +447,12 @@ The `ddev_platform` tool includes built-in safety measures to prevent accidental
 - **Backup First**: Export databases before running destructive operations
 - **Test Locally**: Verify commands work in development before production use
 
-## 🆘 **Troubleshooting**
-
-### Common Issues
-
-**MCP Server Not Connecting**
-- Restart Cursor to reload MCP connections
-- Check that DDEV is installed: `ddev version`
-- Verify Node.js 22+: `node --version`
-
-**Command Timeouts**
-- Increase timeout values for long operations
-- Check DDEV project status
-- Review logs for specific errors
-
-**Permission Issues**
-- Ensure DDEV has proper permissions
-- Check project path accessibility
-- Verify Docker daemon is running
-
 ## 🙏 **Acknowledgments**
 
 - Built with the official [Model Context Protocol SDK](https://github.com/modelcontextprotocol/typescript-sdk)
 - Designed for [DDEV](https://ddev.readthedocs.io/) development environments
 
 ---
-
-## 📚 **Additional Resources**
-
-### **Documentation**
-- **[📁 Complete Documentation](docs/)** - All documentation in one place
-- **[Extending Guide](docs/EXTENDING.md)** - How to add support for new CMS/frameworks
-- **[WordPress Examples](docs/WORDPRESS_EXAMPLES.md)** - Comprehensive WordPress development workflows
-- **[Usage Examples](docs/USAGE_EXAMPLES.md)** - Real-world development scenarios
 
 ### **External Resources**
 - **[DDEV CMS Quickstarts](https://docs.ddev.com/en/stable/users/quickstart/)** - Official DDEV project type documentation
