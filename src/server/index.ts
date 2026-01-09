@@ -131,86 +131,30 @@ export class DDEVMCPServer {
         return await this.ddevOps.stop(args);
       case 'ddev_restart':
         return await this.ddevOps.restart(args);
-      case 'ddev_status':
-        return await this.ddevOps.status(args);
       case 'ddev_describe':
         return await this.ddevOps.describe(args);
       case 'ddev_list':
         return await this.ddevOps.list(args);
+      case 'ddev_logs':
+        return await this.ddevOps.logs(args);
+
+      // Database Operations
       case 'ddev_import_db':
         return await this.ddevOps.importDB(args);
       case 'ddev_export_db':
         return await this.ddevOps.exportDB(args);
-      case 'ddev_drush':
-        return await this.ddevOps.drush(args);
-      case 'ddev_composer':
-        return await this.ddevOps.composer(args);
-      case 'ddev_logs':
-        return await this.ddevOps.logs(args);
-      case 'ddev_ssh':
-        return await this.ddevOps.ssh(args);
-      case 'ddev_config':
-        return await this.ddevOps.config(args);
-      case 'ddev_delete':
-        return await this.ddevOps.delete(args);
-      case 'ddev_clean':
-        return await this.ddevOps.clean(args);
       case 'ddev_snapshot':
         return await this.ddevOps.snapshot(args);
-      case 'ddev_debug':
-        return await this.ddevOps.debug(args);
+
+      // Universal Command Executor (PRIMARY TOOL)
       case 'ddev_exec':
         return await this.ddevOps.exec(args);
-      case 'ddev_help':
-        return await this.ddevOps.help(args);
-      case 'ddev_share':
-        return await this.ddevOps.share(args);
-      case 'ddev_hostname':
-        return await this.ddevOps.hostname(args);
+
+      // Utilities
       case 'ddev_poweroff':
         return await this.ddevOps.poweroff(args);
       case 'ddev_version':
         return await this.ddevOps.version(args);
-      case 'ddev_redis_cli':
-        return await this.ddevOps.redisCli(args);
-      case 'ddev_redis_info':
-        return await this.ddevOps.redisInfo(args);
-      case 'ddev_solr':
-        return await this.ddevOps.solr(args);
-      case 'ddev_solr_zk':
-        return await this.ddevOps.solrZk(args);
-      case 'ddev_mysql':
-        return await this.ddevOps.mysql(args);
-      case 'ddev_platform':
-        return await this.ddevOps.platform(args);
-      case 'ddev_wp_cli':
-        return await this.ddevOps.wpCli(args);
-      case 'ddev_wp_site_info':
-        return await this.ddevOps.getWordPressSiteInfo(args);
-      case 'ddev_wp_plugin_install':
-        return await this.ddevOps.installWordPressPlugin(args);
-      case 'ddev_wp_plugin_toggle':
-        return await this.ddevOps.toggleWordPressPlugin(args);
-      case 'ddev_wp_plugin_list':
-        return await this.ddevOps.listWordPressPlugins(args);
-      case 'ddev_wp_theme_install':
-        return await this.ddevOps.installWordPressTheme(args);
-      case 'ddev_wp_theme_activate':
-        return await this.ddevOps.activateWordPressTheme(args);
-      case 'ddev_wp_core_update':
-        return await this.ddevOps.updateWordPressCore(args);
-      case 'ddev_wp_rewrite_flush':
-        return await this.ddevOps.flushWordPressRewrites(args);
-      case 'ddev_wp_search_replace':
-        return await this.ddevOps.wordPressSearchReplace(args);
-      case 'ddev_wp_plugin_manage':
-        return await this.ddevOps.wpPluginManage(args);
-      case 'ddev_wp_theme_manage':
-        return await this.ddevOps.wpThemeManage(args);
-      case 'ddev_wp_user_manage':
-        return await this.ddevOps.wpUserManage(args);
-      case 'ddev_wp_maintenance':
-        return await this.ddevOps.wpMaintenance(args);
 
       // User Interaction Tools
       case 'message_complete_notification':

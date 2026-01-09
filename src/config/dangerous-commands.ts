@@ -3,6 +3,9 @@
  *
  * This file defines which tools and commands are considered dangerous.
  * Contributors can easily add new dangerous patterns here.
+ *
+ * NOTE: After tool reduction (v1.0.2+), most commands go through ddev_exec.
+ * Specialized tools (ddev_drush, ddev_composer, ddev_wp_cli, etc.) have been removed.
  */
 
 export interface DangerousCommandConfig {
@@ -14,228 +17,146 @@ export interface DangerousCommandConfig {
 
 export const DANGEROUS_COMMANDS: DangerousCommandConfig[] = [
   {
-    toolName: 'ddev_platform',
-    description: 'Platform.sh CLI commands that can affect production environments',
+    toolName: 'ddev_exec',
+    description: 'Commands that can affect production environments or cause data loss',
     commandParam: 'command',
     dangerousPatterns: [
-      // Environment operations that can affect production
-      /environment:delete/i,
-      /environment:deploy/i,
-      /environment:redeploy/i,
-      /environment:merge/i,
-      /environment:pause/i,
-      /environment:push/i,
-      /environment:resume/i,
-      /environment:synchronize/i,
-      /environment:activate/i,
-      /environment:branch/i,
-      /environment:checkout/i,
+      // ===== Platform.sh Commands =====
+      // Environment operations
+      /platform\s+environment:(delete|deploy|redeploy|merge|push|synchronize|activate)/i,
+      /platform\s+-e\s*(prod|production|master|main)/i,
+      /-e\s*(prod|production|master|main)\s+platform/i,
 
       // Backup operations
-      /backup:create/i,
-      /backup:delete/i,
-      /backup:restore/i,
+      /platform\s+backup:(create|delete|restore)/i,
 
       // Database operations
-      /db:dump/i,
-      /db:sql/i,
+      /platform\s+db:(dump|sql)/i,
 
-      // Domain operations
-      /domain:add/i,
-      /domain:delete/i,
-      /domain:update/i,
-
-      // Certificate operations
-      /certificate:add/i,
-      /certificate:delete/i,
+      // Domain and certificate operations
+      /platform\s+domain:(add|delete|update)/i,
+      /platform\s+certificate:(add|delete)/i,
 
       // Project operations
-      /project:delete/i,
-      /project:create/i,
+      /platform\s+project:(delete|create)/i,
 
       // User management
-      /user:add/i,
-      /user:delete/i,
-      /user:update/i,
+      /platform\s+user:(add|delete|update)/i,
 
       // Variable operations
-      /variable:create/i,
-      /variable:delete/i,
-      /variable:update/i,
+      /platform\s+variable:(create|delete|update)/i,
 
       // Integration operations
-      /integration:add/i,
-      /integration:delete/i,
-      /integration:update/i,
+      /platform\s+integration:(add|delete|update)/i,
 
       // Organization operations
-      /organization:create/i,
-      /organization:delete/i,
-      /organization:billing:address/i,
-      /organization:billing:profile/i,
+      /platform\s+organization:(create|delete|billing)/i,
 
       // Team operations
-      /team:create/i,
-      /team:delete/i,
-      /team:update/i,
-      /team:project:add/i,
-      /team:project:delete/i,
-      /team:user:add/i,
-      /team:user:delete/i,
+      /platform\s+team:(create|delete|update|project:add|project:delete|user:add|user:delete)/i,
 
       // Service operations
-      /service:mongo:dump/i,
-      /service:mongo:restore/i,
-
-      // SSH operations to production environments
-      /ssh.*-e(prod|production|master|main)/i,
-      /-e(prod|production|master|main).*ssh/i,
-      /scp.*-e(prod|production|master|main)/i,
-      /-e(prod|production|master|main).*scp/i,
-
-      // Drush operations on production environments
-      /drush.*-e(prod|production|master|main)/i,
-      /-e(prod|production|master|main).*drush/i,
-      /environment:drush.*-e(prod|production|master|main)/i,
+      /platform\s+service:mongo:(dump|restore)/i,
 
       // Mount operations
-      /mount:download/i,
-      /mount:upload/i,
+      /platform\s+mount:(download|upload)/i,
 
       // Operation execution
-      /operation:run/i,
+      /platform\s+(operation:run|source-operation:run)/i,
 
-      // Source operations
-      /source-operation:run/i,
+      // ===== Drupal/Drush Commands =====
+      // Production environment Drush commands
+      /drush\s+.*-e\s*(prod|production|master|main)/i,
+      /drush\s+.*@(prod|production|master|main)/i,
+      /@(prod|production|master|main)\s+drush/i,
 
-      // General dangerous patterns
-      /redeploy/i,
-      /delete/i,
-      /remove/i,
-      /destroy/i,
-      /wipe/i,
-      /clear.*cache/i,
-      /project:clear-build-cache/i
+      // Destructive Drush commands (any environment)
+      /drush\s+(sql-drop|site-install|pm:uninstall|config:delete|entity:delete)/i,
+      /drush\s+sqlc\s+.*DROP/i,
+
+      // ===== WordPress/WP-CLI Commands =====
+      // Production environment WP commands
+      /wp\s+.*--url=.*(prod|production|master|main)/i,
+
+      // ===== Git Operations =====
+      // Force push to protected branches
+      /git\s+push\s+(origin\s+)?(prod|production|master|main)/i,
+      /git\s+push\s+.*(-f|--force)/i,
+
+      // Destructive Git operations
+      /git\s+reset\s+--hard/i,
+      /git\s+clean\s+-fd/i,
+
+      // ===== General Patterns =====
+      // Words that often indicate dangerous operations
+      /(redeploy|destroy|wipe|nuke)\s/i,
     ]
   },
 
-  {
-    toolName: 'ddev_exec',
-    description: 'Execute arbitrary commands in DDEV containers (can be dangerous)',
-    commandParam: 'command',
-    dangerousPatterns: [
-      // Platform.sh production environment commands
-      /platform.*-e(prod|production|master|main)/i,
-      /-e(prod|production|master|main).*platform/i,
-      /platform.*environment:redeploy/i,
-      /platform.*environment:delete/i,
-      /platform.*environment:deploy/i,
-      /platform.*environment:merge/i,
-      /platform.*environment:push/i,
-      /platform.*environment:synchronize/i,
-      /platform.*environment:activate/i,
-      /platform.*environment:branch/i,
-      /platform.*environment:checkout/i,
-      /platform.*backup:create/i,
-      /platform.*backup:delete/i,
-      /platform.*backup:restore/i,
-      /platform.*db:dump/i,
-      /platform.*db:sql/i,
-      /platform.*domain:add/i,
-      /platform.*domain:delete/i,
-      /platform.*domain:update/i,
-      /platform.*certificate:add/i,
-      /platform.*certificate:delete/i,
-      /platform.*project:delete/i,
-      /platform.*project:create/i,
-      /platform.*user:add/i,
-      /platform.*user:delete/i,
-      /platform.*user:update/i,
-      /platform.*variable:create/i,
-      /platform.*variable:delete/i,
-      /platform.*variable:update/i,
-      /platform.*integration:add/i,
-      /platform.*integration:delete/i,
-      /platform.*integration:update/i,
-      /platform.*organization:create/i,
-      /platform.*organization:delete/i,
-      /platform.*team:create/i,
-      /platform.*team:delete/i,
-      /platform.*team:update/i,
-      /platform.*service:mongo:dump/i,
-      /platform.*service:mongo:restore/i,
-      /platform.*mount:download/i,
-      /platform.*mount:upload/i,
-      /platform.*operation:run/i,
-      /platform.*source-operation:run/i,
+  // ===== Example: Adding protection to other tools =====
+  // Uncomment and modify if you add new tools that need protection
 
-      // Drush production environment commands
-      /drush.*-e(prod|production|master|main)/i,
-      /-e(prod|production|master|main).*drush/i,
-      /drush.*@prod/i,
-      /drush.*@production/i,
-      /drush.*@master/i,
-      /drush.*@main/i,
-      /@prod.*drush/i,
-      /@production.*drush/i,
-      /@master.*drush/i,
-      /@main.*drush/i,
-
-      // WP-CLI production environment commands
-      /wp.*--url=.*prod/i,
-      /wp.*--url=.*production/i,
-      /wp.*--url=.*master/i,
-      /wp.*--url=.*main/i,
-
-      // Git operations that can affect production
-      /git\s+push\s+origin\s+(prod|production|master|main)/i,
-      /git\s+push\s+(prod|production|master|main)/i,
-      /git\s+push.*-f/i,
-      /git\s+push.*--force/i,
-
-      // SSH/SCP to production environments
-      /ssh.*-e(prod|production|master|main)/i,
-      /-e(prod|production|master|main).*ssh/i,
-      /scp.*-e(prod|production|master|main)/i,
-      /-e(prod|production|master|main).*scp/i,
-      /ssh.*@prod/i,
-      /ssh.*@production/i,
-      /ssh.*@master/i,
-      /ssh.*@main/i,
-      /@prod.*ssh/i,
-      /@production.*ssh/i,
-      /@master.*ssh/i,
-      /@main.*ssh/i,
-
-      // Database operations on production
-      /mysql.*-h.*prod/i,
-      /mysql.*-h.*production/i,
-      /mysqldump.*-h.*prod/i,
-      /mysqldump.*-h.*production/i,
-
-    ]
-  },
-
-  // Example: Future tool that might have dangerous commands
+  // Example 1: Protect a future database tool
   // {
   //   toolName: 'ddev_database',
-  //   description: 'Database operations that can affect data',
-  //   commandParam: 'action',
+  //   description: 'Direct database operations that can cause data loss',
+  //   commandParam: 'query',
   //   dangerousPatterns: [
-  //     /drop/i,
-  //     /truncate/i,
-  //     /delete.*from/i,
-  //     /alter.*table/i
+  //     /DROP\s+(DATABASE|TABLE)/i,
+  //     /TRUNCATE\s+TABLE/i,
+  //     /DELETE\s+FROM\s+\w+(?!\s+WHERE)/i,
+  //     /ALTER\s+TABLE.*DROP/i,
+  //     /UPDATE\s+\w+\s+SET(?!\s+WHERE)/i, // UPDATE without WHERE
   //   ]
   // },
 
-  // Example: Tool where the entire tool is dangerous
+  // Example 2: Protect a hypothetical deployment tool
   // {
-  //   toolName: 'ddev_destroy_project',
-  //   description: 'Completely destroys a DDEV project and all its data',
-  //   dangerousPatterns: [/.*/] // All commands are dangerous
-  // }
+  //   toolName: 'ddev_deploy',
+  //   description: 'Deployment operations that affect production',
+  //   commandParam: 'environment',
+  //   dangerousPatterns: [
+  //     /(prod|production|master|main)/i,
+  //   ]
+  // },
+
+  // Example 3: Make an entire tool require dangerous flag
+  // {
+  //   toolName: 'ddev_nuclear_option',
+  //   description: 'Extremely destructive operations',
+  //   commandParam: 'command',
+  //   dangerousPatterns: [/.*/] // ALL commands from this tool are dangerous
+  // },
 ];
+
+/**
+ * Notes for Contributors:
+ *
+ * 1. After v1.0.2 tool reduction, we only have 13 tools total:
+ *    - Core: ddev_start, ddev_stop, ddev_restart, ddev_describe, ddev_list, ddev_logs
+ *    - Database: ddev_import_db, ddev_export_db, ddev_snapshot
+ *    - Universal: ddev_exec (handles all CMS/framework commands)
+ *    - Utilities: ddev_version, ddev_poweroff, message_complete_notification
+ *
+ * 2. Most dangerous commands will come through ddev_exec since it's the executor
+ *
+ * 3. When adding patterns, consider:
+ *    - Is it destructive? (deletes, drops, truncates)
+ *    - Does it affect production? (prod, master, main branches/environments)
+ *    - Is it irreversible? (no easy undo)
+ *    - Could it cause downtime? (deploys, restarts)
+ *
+ * 4. Pattern syntax tips:
+ *    - Use \s+ for whitespace (handles spaces and tabs)
+ *    - Use (option1|option2) for alternatives
+ *    - Use /i flag for case-insensitive matching
+ *    - Use \b for word boundaries
+ *    - Escape special regex chars: . * + ? ^ $ { } ( ) | [ ] \
+ *
+ * 5. Test your patterns before committing:
+ *    const pattern = /your-pattern/i;
+ *    console.log(pattern.test('test command'));
+ */
 
 /**
  * Check if a tool has dangerous command patterns

@@ -2,41 +2,43 @@
 
 A **production-ready** Model Context Protocol (MCP) server that provides AI assistants with DDEV development environment automation. Built with TypeScript using the official MCP SDK.
 
-**🚀 47+ Tools for Complete DDEV Automation**
+** 13 Essential Tools**
 
-Supports all DDEV project types including Drupal, WordPress, Laravel, Symfony, TYPO3, CakePHP, Magento, and many more!
+Streamlined tool set optimized for AI models. Supports all DDEV project types including Drupal, WordPress, Laravel, Symfony, TYPO3, CakePHP, Magento, and many more through the powerful `ddev_exec` command!
 
-## 🎯 **Complete DDEV Development Automation**
+## **Complete DDEV Development Automation**
 
 This DDEV MCP server provides comprehensive development environment automation for any web project:
 
 - **Environment Management**: Start, stop, restart DDEV projects
 - **Database Operations**: Import/export, snapshots, migrations
-- **CMS-Specific Workflows**: Drupal, WordPress, Laravel, and more
+- **CMS-Specific Workflows**: Drupal, WordPress, Laravel, etc
 
-## ✨ **Features**
+## **Features**
 
-### 🔧 **Environment Management**
+### **Environment Management**
 - Start, stop, restart DDEV projects
 - Get project status and detailed information
 - Access container logs and SSH into services
 
-### 💾 **Database Operations**
+### **Database Operations**
 - Import/export databases with various formats
 - Support for compressed database files
 - Target specific databases in multi-db setups
 
-### 🌐 **CMS & Framework Integration**
-- **Drupal**: Execute Drush commands, manage modules and themes
-- **WordPress**: WP-CLI commands, plugin/theme management, core updates
-- **Laravel**: Artisan commands, package management
-- **Symfony**: Console commands, bundle management
-- **TYPO3**: TYPO3 Console commands, extension management
-- **Magento**: Magento CLI, module management
-- **And more**: Extensible architecture for any DDEV-supported project type
+### **Command Executor (exec)**
+- **Single `ddev_exec` tool** handles all CMS/framework commands
+- **Drupal**: Execute Drush commands (`drush cr`, `drush cex`, etc.)
+- **WordPress**: WP-CLI commands (`wp plugin list`, `wp core update`, etc.)
+- **Laravel**: Artisan commands (`php artisan migrate`, etc.)
+- **Symfony**: Console commands (`symfony console cache:clear`, etc.)
+- **Composer**: Package management (`composer install`, `composer update`, etc.)
+- **Redis, Solr, MySQL**: Direct service commands
+- **Testing**: Playwright, Cypress, PHPUnit, and custom test runners
+- **And more**: Any command you can run in a DDEV container!
 
-### 🛡️ **Enterprise Ready**
-- Comprehensive error handling and logging
+### 🛡️ **Production Ready**
+- Thorough error handling and logging
 - Input validation and sanitization
 - Configurable timeouts and security measures
 - TypeScript for type safety
@@ -71,7 +73,7 @@ ddev-mcp --version
 ### Development Setup
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:codingsasi/ddev-mcp.git
 cd ddev-mcp
 npm install
 npm run build
@@ -89,7 +91,10 @@ Add to your `~/.cursor/mcp.json`:
   "mcpServers": {
     "ddev": {
       "command": "npx",
-      "args": ["ddev-mcp"]
+      "args": ["ddev-mcp"],
+      "env": {
+        "ALLOW_DANGEROUS_COMMANDS": "false" // true if you want ddev to run commands like `platform redeploy -emaster`
+      },
     }
   }
 }
@@ -100,9 +105,6 @@ No additional configuration needed! The server automatically detects your DDEV p
 ### Environment Variables
 
 ```bash
-# Optional: Set default project path
-export DDEV_PROJECT_PATH="/path/to/your/ddev/project"
-
 # Optional: Configure logging level
 export DDEV_MCP_LOG_LEVEL="DEBUG"
 
@@ -138,75 +140,37 @@ The DDEV MCP server operates on the **current working directory** principle:
 - **No complex directory detection or configuration needed**
 - **User controls the context by navigating to the correct directory**
 
-#### **Usage Pattern**
-```bash
-# Navigate to your DDEV project
-cd /path/to/your/ddev/project
-
-# Use AI assistant with DDEV MCP commands
-# The MCP server will run DDEV commands in the current directory
-```
-
-#### **IDE Integration**
-When using with IDEs like Cursor:
-- The MCP server inherits the IDE's current working directory
-- Commands run in the context of your currently open project
-- You can ask the AI to change directories if needed
-
-#### **Directory Control**
-If you need to run commands in a different directory:
-- Ask the AI: *"Change to the /path/to/project directory and run ddev status"*
-- Or specify the project path in tool parameters where supported
-
-## 🚀 **Usage Examples**
-
-### Basic DDEV Operations
-
-```
-"Use DDEV MCP to start the ddev project environment"
-"Get the status of my DDEV project and show me the URLs"
-"Restart DDEV with fresh containers"
-```
-
-### Database Management
-
-```
-"Import the latest production database dump using DDEV MCP"
-"Export current database to backup-$(date).sql.gz"
-"Import database from /path/to/dump.sql into my project"
-```
-
-### CMS-Specific Development
+### CMS-Specific Development Usage (via ddev_exec)
 
 ```
 # Drupal
-"Use DDEV MCP to run drush cr to clear Drupal cache"
-"Execute drush cex to export configuration via DDEV"
+"Use ddev mcp to clear Drupal cache"
+"Use ddev mcp to execute drush cex to export configuration"
+"Use ddev mcp to use drush uli to get a one-time login link"
 
 # WordPress
-"Use DDEV MCP to install and activate the Akismet plugin"
-"Update WordPress core to the latest version via DDEV"
+"Use ddev mcp to install and activate the Akismet plugin with wp plugin install"
+"ddev mcp: Run wp core update to update WordPress"
+"ddev mcp: Run wp cache flush to clear caches"
 
-# Laravel
-"Run php artisan migrate using DDEV MCP"
-"Execute artisan cache:clear via DDEV"
-
-# Symfony
-"Use DDEV MCP to run symfony console cache:clear"
-"Execute doctrine:migrations:migrate via DDEV"
+# Composer
+"Use ddev mcp to run composer install using ddev_exec"
+"ddev mcp: Update packages with composer update"
 ```
 
-### Advanced Workflows
+### Other things you can do
 
 ```
 "DDEV MCP: Start fresh development environment with latest DB"
 "DDEV MCP: Enable debug mode and clear cache for debugging"
 "DDEV MCP: Import test data for testing"
 
-# Add-on specific workflows
-"DDEV MCP: Clear Redis cache and check memory usage"
-"DDEV MCP: Create new Solr core for testing, then query indexed content"
-"DDEV MCP: Run custom commands using ddev exec"
+# Add-on specific workflows (via ddev_exec)
+"DDEV MCP: Clear Redis cache with redis-cli FLUSHALL"
+"DDEV MCP: Check Redis memory with redis-cli INFO memory"
+"DDEV MCP: Query Solr with curl commands"
+"DDEV MCP: Run MySQL queries with mysql -e"
+"DDEV MCP: Execute Playwright tests"
 
 # Directory navigation workflows
 "DDEV MCP: Go to my WordPress project at ~/Projects/mysite and start it"
@@ -214,140 +178,61 @@ If you need to run commands in a different directory:
 "DDEV MCP: Go to the correct project folder and run database import"
 ```
 
-## 🛠️ **Available Tools**
+## 🛠️ **Available Tools (13 Total)**
 
-### **Core DDEV Tools**
+### **Core Project Management (6 tools)**
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
 | `ddev_start` | Start DDEV environment | `projectPath`, `skipHooks` |
 | `ddev_stop` | Stop DDEV environment | `projectPath` |
 | `ddev_restart` | Restart DDEV environment | `projectPath` |
-| `ddev_status` | Get project status | `projectPath` |
 | `ddev_describe` | Get detailed project info | `projectPath` |
-| `ddev_list` | List all DDEV projects | - |
+| `ddev_list` | List all DDEV projects | `activeOnly` |
+| `ddev_logs` | Get service logs | `projectPath`, `service`, `tail` |
 
-### **Database Operations**
+### **Database Operations (3 tools)**
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
 | `ddev_import_db` | Import database | `projectPath`, `src`, `targetDb` |
 | `ddev_export_db` | Export database | `projectPath`, `file`, `compressionType` |
 | `ddev_snapshot` | Manage database snapshots | `projectPath`, `action`, `name` |
 
-### **Configuration & Project Management**
+### **Universal Command Executor (1 tool - THE MOST IMPORTANT)**
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
-| `ddev_config` | Configure DDEV project | `projectName`, `projectType`, `docroot`, `phpVersion` |
-| `ddev_delete` | Delete project | `projectPath`, `projectName`, `omitSnapshot`, `yes` |
-| `ddev_clean` | Clean DDEV items | `projectPath`, `all`, `dryRun` |
+| `ddev_exec` | **Execute ANY command in container** | `projectPath`, `command`, `service`, `workdir` |
 
-### **Service Management**
+### **Utilities (3 tools)**
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
-| `ddev_logs` | Get service logs | `projectPath`, `service`, `tail` |
-| `ddev_ssh` | SSH into container | `projectPath`, `command`, `service` |
-| `ddev_exec` | Execute command in container | `projectPath`, `command`, `service`, `workdir` |
-
-### **Development Tools**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_composer` | Execute Composer commands | `projectPath`, `command`, `args` |
-| `ddev_drush` | Execute Drush commands (Drupal) | `projectPath`, `command`, `args` |
-| `ddev_debug` | Run debugging commands | `projectPath`, `command` |
-| `ddev_exec` | Execute any command in container | `projectPath`, `command`, `service`, `workdir` |
-
-> **Note on Custom Commands**: For project-specific tools like Playwright, Cypress, or other testing frameworks, use `ddev_exec` instead of dedicated tools. This approach is more reliable because:
-> - Each project may have different configurations and setups
-> - Custom commands can be executed directly without abstraction overhead
-> - Better control over timeouts and execution context
-> - Example: `ddev_exec` with `command: "playwright test"` or `command: "npm run test:e2e"`
-
-### **Sharing & Networking**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_share` | Share project via ngrok | `projectPath`, `ngrokArgs` |
-| `ddev_hostname` | Manage hostfile entries | `projectPath`, `action`, `hostname` |
-
-### **Global Operations**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_poweroff` | Stop all DDEV projects | `timeout` |
 | `ddev_version` | Get DDEV version info | `timeout` |
+| `ddev_poweroff` | Stop all DDEV projects | `timeout` |
+| `message_complete_notification` | Send OS notification | `title`, `message` |
 
-### **Directory Navigation**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_go_to_project_directory` | Navigate to DDEV project directory | `path`, `verify` |
-
-### **Add-on & Service-Specific Tools**
-
-#### **Redis Operations**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_redis_cli` | Execute Redis CLI commands | `projectPath`, `command` |
-| `ddev_redis_info` | Get Redis server information | `projectPath`, `section` |
-
-#### **Solr Search Engine**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_solr_admin` | Solr admin operations | `projectPath`, `action`, `core`, `configSet` |
-| `ddev_solr_query` | Execute Solr search queries | `projectPath`, `core`, `query`, `rows`, `fields` |
-
-### **CMS-Specific Tools**
-
-#### **Drupal Tools**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_drush` | Execute Drush commands | `projectPath`, `command`, `args` |
-| `ddev_composer` | Execute Composer commands | `projectPath`, `command`, `args` |
-
-#### **WordPress Tools**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_wp_cli` | Execute WP-CLI commands | `projectPath`, `command`, `args` |
-| `ddev_wp_site_info` | Get WordPress site information | `projectPath` |
-
-#### **WordPress Plugin Management**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_wp_plugin_install` | Install WordPress plugins | `projectPath`, `plugin`, `activate` |
-| `ddev_wp_plugin_toggle` | Activate/deactivate plugins | `projectPath`, `plugin`, `action` |
-| `ddev_wp_plugin_list` | List WordPress plugins | `projectPath`, `status` |
-| `ddev_wp_plugin_manage` | Comprehensive plugin management | `projectPath`, `action`, `plugin`, `version` |
-
-#### **WordPress Theme Management**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_wp_theme_install` | Install WordPress themes | `projectPath`, `theme`, `activate` |
-| `ddev_wp_theme_activate` | Activate WordPress theme | `projectPath`, `theme` |
-| `ddev_wp_theme_manage` | Comprehensive theme management | `projectPath`, `action`, `theme`, `version` |
-
-#### **WordPress User & Maintenance**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_wp_user_manage` | User operations (create, update, delete, list) | `projectPath`, `action`, `user`, `userLogin`, `role` |
-| `ddev_wp_core_update` | Update WordPress core | `projectPath`, `version`, `force` |
-| `ddev_wp_rewrite_flush` | Flush rewrite rules | `projectPath` |
-| `ddev_wp_search_replace` | Database search/replace | `projectPath`, `oldUrl`, `newUrl` |
-| `ddev_wp_maintenance` | Cache, cron, and maintenance operations | `projectPath`, `action`, `enable` |
-
-> **Extensible Architecture**: Additional CMS tools can be easily added for Laravel (Artisan), Symfony (Console), TYPO3, Magento, and other [DDEV-supported frameworks](https://docs.ddev.com/en/stable/users/quickstart/).
 
 ## 🧪 **Development & Testing**
 
 ### Build and Test
 
-```bash
-# Build TypeScript
-npm run build
+- Clone the repo to `/path/to/repo/for/ddev-mcp/`
+- Run `npm run build`
+- and add the following to mcp.json file.
 
-# Run tests
-npm test
-
-# Development with hot reload
-npm run dev
-
-# Clean build artifacts
-npm run clean
+```json
+{
+  "mcpServers": {
+    "ddev": {
+      "command": "npx",
+      "args": [
+        "/path/to/repo/for/ddev-mcp/dist/index.js"
+      ],
+      "env": {
+        "DDEV_MCP_LOG_LEVEL": "INFO"
+      },
+      "timeout": 30000
+    },
+  }
+}
 ```
 
 ## 🔧 **Architecture**
@@ -369,30 +254,15 @@ src/
 └── index.ts         # CLI entry point
 ```
 
-### Supported DDEV Project Types
-
-Based on the [DDEV CMS Quickstarts](https://docs.ddev.com/en/stable/users/quickstart/), this MCP server works with:
-
-**Content Management Systems:**
-- Backdrop, Drupal, WordPress, TYPO3, Joomla, ProcessWire
-
-**PHP Frameworks:**
-- Laravel, Symfony, CakePHP, Pimcore, Sulu
-
-**Other Platforms:**
-- Craft CMS, ExpressionEngine, Grav, Statamic, Silverstripe CMS, Moodle
-
-**And more!** The architecture supports any DDEV project type through generic commands and extensible CMS-specific integrations.
-
-
 ## 🤝 **Contributing**
 
 This project is designed for team collaboration with familiar JavaScript/TypeScript patterns:
 
 1. **Fork and Clone**: Standard GitHub workflow
 2. **Install Dependencies**: `npm install`
+2. **Build**: `npm run build`
 3. **Make Changes**: Follow existing patterns
-4. **Test**: Manually
+4. **Test**: Manually (Use it in your ddev project)
 5. **Submit PR**: With clear description
 
 ### Coding Standards
@@ -403,49 +273,6 @@ This project is designed for team collaboration with familiar JavaScript/TypeScr
 - Unit tests for new features
 - Documentation updates
 
-## 📚 **Integration Examples**
-
-### Development Workflow Examples
-
-```bash
-# Morning startup routine
-"DDEV MCP: Start development environment and import latest production data"
-
-# Feature development
-"DDEV MCP: Enable new feature and clear cache"
-
-# Bug investigation
-"DDEV MCP: Enable Xdebug and tail error logs"
-
-# Deployment preparation
-"DDEV MCP: Run database updates and build assets"
-```
-
-## 🔒 **Security Considerations**
-
-### **Platform.sh Integration Safety**
-
-The `ddev_platform` tool includes built-in safety measures to prevent accidental execution of potentially destructive commands:
-
-- **Required Confirmation**: All Platform.sh commands require explicit user confirmation via `confirmExecution: true`
-- **Production Protection**: Commands that can affect production environments are blocked without confirmation
-- **Clear Warnings**: Detailed error messages explain why commands were blocked
-
-**Example:**
-```bash
-# This will be blocked with a security warning
-"DDEV MCP: Run platform environment:redeploy"
-
-# This will execute (with explicit confirmation)
-"DDEV MCP: Run platform environment:list with confirmExecution: true"
-```
-
-### **General Security Best Practices**
-
-- **Review Commands**: Always review DDEV commands before execution
-- **Use Dry Runs**: Many tools support `dryRun` mode for safe testing
-- **Backup First**: Export databases before running destructive operations
-- **Test Locally**: Verify commands work in development before production use
 
 ## 🙏 **Acknowledgments**
 
