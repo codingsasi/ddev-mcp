@@ -100,15 +100,7 @@ export class DDEVMCPServer {
   }
 
   private async executeToolCall(toolName: string, args: any): Promise<CommandResult> {
-    // Get timeout from environment variable, default to 120 seconds (2 minutes)
-    const timeoutMs = parseInt(process.env.DDEV_MCP_TOOL_TIMEOUT || '120000', 10);
-
-    const timeoutPromise = new Promise<CommandResult>((_, reject) => {
-      setTimeout(() => reject(new Error(`Tool execution timeout after ${timeoutMs}ms`)), timeoutMs);
-    });
-
-    const toolExecution = this.executeTool(toolName, args);
-    return await Promise.race([toolExecution, timeoutPromise]);
+    return await this.executeTool(toolName, args);
   }
 
   private async executeTool(toolName: string, args: any): Promise<CommandResult> {
@@ -155,6 +147,8 @@ export class DDEVMCPServer {
         return await this.ddevOps.poweroff(args);
       case 'ddev_version':
         return await this.ddevOps.version(args);
+      case 'ddev_help':
+        return await this.ddevOps.help(args);
 
       // User Interaction Tools
       case 'message_complete_notification':

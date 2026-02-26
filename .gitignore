@@ -45,3 +45,5 @@ coverage/
 *.temp
 
 *.tgz
+
+.npmrc

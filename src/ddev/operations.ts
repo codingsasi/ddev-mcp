@@ -60,7 +60,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: effectivePath,
-      timeout: options.timeout || 120000 // 2 minutes for DDEV start
     };
 
     return await this.commandExecutor.executeDDEV('start', args, execOptions);
@@ -79,7 +78,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: effectivePath,
-      timeout: options.timeout || 60000 // 1 minute for DDEV stop
     };
 
     return await this.commandExecutor.executeDDEV('stop', [], execOptions);
@@ -93,7 +91,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 180000 // 3 minutes for restart
     };
 
     return await this.commandExecutor.executeDDEV('restart', [], execOptions);
@@ -107,7 +104,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('status', [], execOptions);
@@ -121,7 +117,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('describe', [], execOptions);
@@ -130,7 +125,7 @@ export class DDEVOperations {
   /**
    * List all DDEV projects
    */
-  async list(options: { activeOnly?: boolean; timeout?: number } = {}): Promise<CommandResult> {
+  async list(options: { activeOnly?: boolean } = {}): Promise<CommandResult> {
     this.logger.debug('Listing DDEV projects', { options });
 
     const args: string[] = [];
@@ -139,7 +134,6 @@ export class DDEVOperations {
     }
 
     const execOptions = {
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('list', args, execOptions);
@@ -156,15 +150,14 @@ export class DDEVOperations {
     });
 
     const args: string[] = [];
-    if (options.src) args.push(`--src=${options.src}`);
-    if (options.srcRaw) args.push(`--src-raw=${options.srcRaw}`);
+    // ddev import-db uses --file (-f) for source path, --database (-d) for target DB
+    if (options.src) args.push(`--file=${options.src}`);
     if (options.extractPath) args.push(`--extract-path=${options.extractPath}`);
-    if (options.noActivatePlugins) args.push('--no-activate-plugins');
-    if (options.targetDb) args.push(`--target-db=${options.targetDb}`);
+    if (options.targetDb) args.push(`--database=${options.targetDb}`);
+    // srcRaw and noActivatePlugins are not supported by ddev import-db CLI
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 300000 // 5 minutes for DB import
     };
 
     return await this.commandExecutor.executeDDEV('import-db', args, execOptions);
@@ -183,11 +176,10 @@ export class DDEVOperations {
     const args: string[] = [];
     if (options.file) args.push(`--file=${options.file}`);
     if (options.compressionType) args.push(`--${options.compressionType}`);
-    if (options.targetDb) args.push(`--target-db=${options.targetDb}`);
+    if (options.targetDb) args.push(`--database=${options.targetDb}`);
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 300000 // 5 minutes for DB export
     };
 
     return await this.commandExecutor.executeDDEV('export-db', args, execOptions);
@@ -210,7 +202,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000 // 2 minutes for Drush commands
     };
 
     return await this.commandExecutor.executeDDEV('drush', args, execOptions);
@@ -231,7 +222,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 300000 // 5 minutes for Composer commands
     };
 
     return await this.commandExecutor.executeDDEV('composer', args, execOptions);
@@ -250,7 +240,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('logs', args, execOptions);
@@ -272,7 +261,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('exec', [`--service=${service}`, command], execOptions);
@@ -310,7 +298,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000 // 2 minutes for WP-CLI commands
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -324,7 +311,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 60000
     };
 
     return await this.commandExecutor.executeDDEV('wp', ['core', 'version', '--extra'], execOptions);
@@ -346,7 +332,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -366,7 +351,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 60000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -389,7 +373,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 60000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -411,7 +394,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -430,7 +412,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 60000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -452,7 +433,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 300000 // 5 minutes for core updates
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -466,7 +446,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('wp', ['rewrite', 'flush'], execOptions);
@@ -496,7 +475,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -578,7 +556,6 @@ export class DDEVOperations {
 
       const execOptions = {
         cwd: options.projectPath,
-        timeout: options.timeout || 30000
       };
 
       return await this.commandExecutor.executeDDEV('config', args, execOptions);
@@ -595,7 +572,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('config', args, execOptions);
@@ -634,7 +610,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 60000
     };
 
     return await this.commandExecutor.executeDDEV('delete', args, execOptions);
@@ -659,7 +634,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('clean', args, execOptions);
@@ -705,8 +679,7 @@ export class DDEVOperations {
     }
 
     const execOptions = {
-      cwd: options.projectPath,
-      timeout: options.timeout || 300000
+      cwd: options.projectPath
     };
 
     return await this.commandExecutor.executeDDEV('snapshot', args, execOptions);
@@ -737,8 +710,7 @@ export class DDEVOperations {
     }
 
     const execOptions = {
-      cwd: options.projectPath,
-      timeout: options.timeout || 300000
+      cwd: options.projectPath
     };
 
     return await this.commandExecutor.executeDDEV('import-files', args, execOptions);
@@ -763,7 +735,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('debug', args, execOptions);
@@ -805,13 +776,12 @@ export class DDEVOperations {
     const args: string[] = [];
 
     args.push(`--service=${targetService}`);
-    if (options.workdir) args.push(`--workdir=${options.workdir}`);
+    if (options.workdir) args.push(`--dir=${options.workdir}`);
 
     args.push(options.command);
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('exec', args, execOptions);
@@ -835,7 +805,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('share', args, execOptions);
@@ -875,7 +844,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('hostname', args, execOptions);
@@ -884,38 +852,39 @@ export class DDEVOperations {
   /**
    * Power off all DDEV projects
    */
-  async poweroff(options: { timeout?: number } = {}): Promise<CommandResult> {
+  async poweroff(options: {} = {}): Promise<CommandResult> {
     this.logger.info('Powering off all DDEV projects');
 
     const execOptions = {
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('poweroff', [], execOptions);
   }
 
   /**
-   * Get help information for DDEV commands
+   * Get help information for DDEV commands.
+   * Use command (e.g. "import-db", "snapshot") for "ddev help <command>".
+   * Use subcommand (e.g. "restore") with command (e.g. "snapshot") for "ddev snapshot restore --help".
    */
-  async help(options: DDEVCommandOptions & { command?: string }): Promise<CommandResult> {
+  async help(options: DDEVCommandOptions & { command?: string; subcommand?: string }): Promise<CommandResult> {
     this.logger.info('Getting DDEV help information', {
       command: options.command,
+      subcommand: options.subcommand,
       projectPath: options.projectPath
     });
 
-    const args: string[] = ['help'];
-
-    if (options.command) {
-      args.push(options.command);
-    }
-
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
-    // For help command, we need to use ddev directly, not executeDDEV
-    const command = options.command ? `ddev help ${options.command}` : 'ddev help';
+    let command: string;
+    if (options.command && options.subcommand) {
+      command = `ddev ${options.command} ${options.subcommand} --help`;
+    } else if (options.command) {
+      command = `ddev help ${options.command}`;
+    } else {
+      command = 'ddev help';
+    }
 
     return await this.commandExecutor.execute(command, execOptions);
   }
@@ -923,11 +892,10 @@ export class DDEVOperations {
   /**
    * Get DDEV version information
    */
-  async version(options: { timeout?: number } = {}): Promise<CommandResult> {
+  async version(options: {} = {}): Promise<CommandResult> {
     this.logger.info('Getting DDEV version information');
 
     const execOptions = {
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('version', [], execOptions);
@@ -940,7 +908,6 @@ export class DDEVOperations {
   async changeDirectory(options: {
     path: string;
     verify?: boolean;
-    timeout?: number;
   }): Promise<CommandResult> {
     this.logger.info('Navigating to DDEV project directory', {
       path: options.path,
@@ -983,7 +950,6 @@ export class DDEVOperations {
 
       // Test cd command to verify path works (preserves symlinks)
       const cdResult = await this.commandExecutor.execute(`cd "${resolvedPath}" && pwd`, {
-        timeout: options.timeout || 30000
       });
 
       if (!cdResult.success) {
@@ -1016,7 +982,6 @@ export class DDEVOperations {
           try {
             const statusResult = await this.commandExecutor.executeDDEV('status', [], {
               cwd: symlinkPath, // Use the symlink path
-              timeout: options.timeout || 30000
             });
 
             if (statusResult.success) {
@@ -1079,7 +1044,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('redis-cli', args, execOptions);
@@ -1104,7 +1068,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.executeDDEV('redis-cli', args, execOptions);
@@ -1127,7 +1090,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 60000
     };
 
     return await this.commandExecutor.executeDDEV('solr', args, execOptions);
@@ -1150,7 +1112,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 60000
     };
 
     return await this.commandExecutor.executeDDEV('solr-zk', args, execOptions);
@@ -1177,7 +1138,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 30000
     };
 
     return await this.commandExecutor.execute(command, execOptions);
@@ -1201,7 +1161,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('platform', args, execOptions);
@@ -1258,7 +1217,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('playwright', args, execOptions);
@@ -1288,8 +1246,7 @@ export class DDEVOperations {
     }
 
     const execOptions = {
-      cwd: options.projectPath,
-      timeout: options.timeout || 300000
+      cwd: options.projectPath
     };
 
     return await this.commandExecutor.executeDDEV('playwright', args, execOptions);
@@ -1338,7 +1295,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -1380,7 +1336,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 120000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -1426,7 +1381,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 60000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -1473,7 +1427,6 @@ export class DDEVOperations {
 
     const execOptions = {
       cwd: options.projectPath,
-      timeout: options.timeout || 60000
     };
 
     return await this.commandExecutor.executeDDEV('wp', args, execOptions);
@@ -1499,7 +1452,6 @@ export class DDEVOperations {
         notifier.default.notify({
           title,
           message,
-          timeout: 15, // 15 seconds - longer for important notifications
         });
       } else {
         // Fallback to console notification

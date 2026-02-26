@@ -8,7 +8,10 @@ import { ToolDefinition } from '../types/index.js';
 export const DDEV_TOOLS: ToolDefinition[] = [
   {
     name: 'ddev_start',
-    description: 'Start a DDEV project environment',
+    description: `Start a DDEV project environment. Initializes and configures the web server and database containers. Run from project directory or pass project name(s).
+Usage: ddev start [projectname ...] [flags]
+Flags: -a/--all, -y/--skip-confirmation, --skip-hooks
+For full options: ddev help start`,
     inputSchema: {
       type: 'object',
       properties: {
@@ -25,11 +28,6 @@ export const DDEV_TOOLS: ToolDefinition[] = [
           type: 'boolean',
           description: 'Skip confirmation prompts',
           default: false
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 120000
         }
       },
       required: ['projectPath']
@@ -38,18 +36,15 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_stop',
-    description: 'Stop a DDEV project environment',
+    description: `Stop and remove the containers of a DDEV project. Non-destructive: leaves database and code intact. Run from project dir or pass project name(s).
+Usage: ddev stop [projectname ...] [flags]
+For full options (e.g. --remove-data, --snapshot): ddev help stop`,
     inputSchema: {
       type: 'object',
       properties: {
         projectPath: {
           type: 'string',
           description: 'Path to the DDEV project directory'
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 60000
         }
       },
       required: ['projectPath']
@@ -58,18 +53,16 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_restart',
-    description: 'Restart a DDEV project environment',
+    description: `Restart a DDEV project: stops then starts named project(s).
+Usage: ddev restart [projectname ...] [flags]
+Flags: -a/--all, -y/--skip-confirmation
+For full options: ddev help restart`,
     inputSchema: {
       type: 'object',
       properties: {
         projectPath: {
           type: 'string',
           description: 'Path to the DDEV project directory'
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 180000
         }
       },
       required: ['projectPath']
@@ -78,18 +71,15 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_describe',
-    description: 'Get detailed information about a DDEV project. Same as ddev status.',
+    description: `Get a detailed description of a running DDEV project (name, location, URL, status, MySQL connection details, Mailpit, etc.). Aliases: describe, status, st.
+Usage: ddev describe [projectname] [flags]
+For full options: ddev help describe`,
     inputSchema: {
       type: 'object',
       properties: {
         projectPath: {
           type: 'string',
           description: 'Path to the DDEV project directory'
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 30000
         }
       }
     }
@@ -97,7 +87,10 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_list',
-    description: 'List all DDEV projects with their status and information',
+    description: `List DDEV projects and their status. Shows all by default; use activeOnly for running only.
+Usage: ddev list [flags]
+Flags: -A/--active-only, -t/--type
+For full options: ddev help list`,
     inputSchema: {
       type: 'object',
       properties: {
@@ -105,11 +98,6 @@ export const DDEV_TOOLS: ToolDefinition[] = [
           type: 'boolean',
           description: 'Show only running projects',
           default: false
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 30000
         }
       }
     }
@@ -117,7 +105,10 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_import_db',
-    description: 'Import a database into DDEV project',
+    description: `Import a SQL dump file into the project. Supports .sql, .sql.gz, .sql.bz2, .sql.xz, .mysql, .zip, .tgz, .tar.gz. For archives, use extractPath for path inside archive. Target DB via targetDb (default "db").
+Usage: ddev import-db [project] [flags]
+MCP args → ddev: src → --file, targetDb → --database, extractPath → --extract-path
+For full options and examples: ddev help import-db`,
     inputSchema: {
       type: 'object',
       properties: {
@@ -127,29 +118,15 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         },
         src: {
           type: 'string',
-          description: 'Source database file path'
-        },
-        srcRaw: {
-          type: 'string',
-          description: 'Raw SQL to import'
+          description: 'Path to SQL dump file (ddev --file). Relative to project or absolute.'
         },
         extractPath: {
           type: 'string',
-          description: 'Path to extract compressed files'
-        },
-        noActivatePlugins: {
-          type: 'boolean',
-          description: 'Skip WordPress plugin activation',
-          default: false
+          description: 'Path to extract within archive (ddev --extract-path)'
         },
         targetDb: {
           type: 'string',
-          description: 'Target database name'
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 300000
+          description: 'Target database name (ddev --database, default "db")'
         }
       }
     }
@@ -157,7 +134,10 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_export_db',
-    description: 'Export database from DDEV project',
+    description: `Dump a database to a file or stdout. Compression: gzip (default), bzip2, or xz. Target DB via targetDb (default "db").
+Usage: ddev export-db [project] [flags]
+MCP args → ddev: file → -f/--file, targetDb → -d/--database, compressionType → --gzip|--bzip2|--xz
+For full options and examples: ddev help export-db`,
     inputSchema: {
       type: 'object',
       properties: {
@@ -177,11 +157,6 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         targetDb: {
           type: 'string',
           description: 'Target database name'
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 300000
         }
       }
     }
@@ -189,7 +164,10 @@ export const DDEV_TOOLS: ToolDefinition[] = [
 
   {
     name: 'ddev_logs',
-    description: 'Get logs from DDEV services',
+    description: `Display stdout logs from DDEV services (docker logs). Default: web service; use service for e.g. db.
+Usage: ddev logs [projectname] [flags]
+Flags: -s/--service (web|db), -f/--follow, --tail N
+For full options: ddev help logs`,
     inputSchema: {
       type: 'object',
       properties: {
@@ -209,11 +187,6 @@ export const DDEV_TOOLS: ToolDefinition[] = [
         tail: {
           type: 'number',
           description: 'Number of lines to tail'
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 30000
         }
       }
     }
@@ -222,7 +195,10 @@ export const DDEV_TOOLS: ToolDefinition[] = [
   // Database snapshots
   {
     name: 'ddev_snapshot',
-    description: 'Create, list, or restore database snapshots',
+    description: `Create, list, restore, or cleanup database snapshots (stored in .ddev/db_snapshots). Restore with action=restore and snapshotName; use ddev snapshot restore --latest for latest.
+Usage: ddev snapshot [projectname...] [flags] | ddev snapshot restore [name] [flags]
+Actions: create (optional name), list, restore (snapshotName or --latest), cleanup. Flags: -n/--name, -l/--list, -C/--cleanup, -y/--yes, -a/--all
+For full options: ddev help snapshot; ddev snapshot restore --help`,
     inputSchema: {
       type: 'object',
       properties: {
@@ -253,11 +229,6 @@ export const DDEV_TOOLS: ToolDefinition[] = [
           type: 'boolean',
           description: 'Skip confirmation prompts',
           default: false
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 300000
         }
       }
     }
@@ -267,7 +238,10 @@ export const DDEV_TOOLS: ToolDefinition[] = [
   // Service management - PRIMARY COMMAND EXECUTOR
   {
     name: 'ddev_exec',
-    description: `Execute any command in a DDEV service container. This is the PRIMARY tool for running commands in your DDEV project.
+    description: `Execute a shell command in the container for a DDEV service. Default: web service; use service (e.g. db, redis, solr) to run in another. workdir maps to ddev --dir.
+Usage: ddev exec [flags] [command] [command-flags]
+Flags: -s/--service (default web), -d/--dir (execution directory)
+For full options: ddev help exec
 
 COMMON USE CASES:
 
@@ -351,11 +325,6 @@ Dangerous commands blocked unless ALLOW_DANGEROUS_COMMANDS=true.`,
         workdir: {
           type: 'string',
           description: 'Working directory for the command (e.g., "/var/www/html", "/var/www/html/drupal")'
-        },
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 120000
         }
       },
       required: ['projectPath', 'command']
@@ -365,33 +334,50 @@ Dangerous commands blocked unless ALLOW_DANGEROUS_COMMANDS=true.`,
   // Global operations
   {
     name: 'ddev_poweroff',
-    description: 'Stop all DDEV projects and containers',
+    description: `Stop all DDEV projects and containers (equivalent to ddev stop -a --stop-ssh-agent). Stops Mutagen daemon if running.
+Usage: ddev poweroff [flags]
+For full options: ddev help poweroff`,
     inputSchema: {
       type: 'object',
-      properties: {
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 120000
-        }
-      }
+      properties: {}
     }
   },
 
   {
     name: 'ddev_version',
-    description: 'Get DDEV version and component information',
+    description: `Display the version of the DDEV binary and its components.
+Usage: ddev version [flags]
+For full options: ddev help version`,
+    inputSchema: {
+      type: 'object',
+      properties: {}
+    }
+  },
+
+  {
+    name: 'ddev_help',
+    description: `Get help for any DDEV command. Returns the same output as "ddev help <command>" or "ddev <command> <subcommand> --help". Use when you need exact flags, examples, or usage for a ddev command.
+Usage: ddev help [command] | ddev <command> <subcommand> --help
+Examples: command="import-db" → ddev help import-db; command="snapshot", subcommand="restore" → ddev snapshot restore --help. Leave command empty for general ddev help.`,
     inputSchema: {
       type: 'object',
       properties: {
-        timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds',
-          default: 30000
+        command: {
+          type: 'string',
+          description: 'DDEV command name (e.g. start, stop, import-db, export-db, logs, snapshot, exec, poweroff, version). Omit for general ddev help.'
+        },
+        subcommand: {
+          type: 'string',
+          description: 'Optional subcommand (e.g. restore for "ddev snapshot restore --help"). Use with command.'
+        },
+        projectPath: {
+          type: 'string',
+          description: 'Optional project path (cwd for running ddev). Not required for help.'
         }
       }
     }
   },
+
   // User Interaction Tools
   {
     name: 'message_complete_notification',

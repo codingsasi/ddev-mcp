@@ -11,14 +11,16 @@ describe('DDEV MCP Server', () => {
         'ddev_start',
         'ddev_stop',
         'ddev_restart',
-        'ddev_status',
         'ddev_describe',
+        'ddev_list',
         'ddev_import_db',
         'ddev_export_db',
-        'ddev_drush',
-        'ddev_composer',
         'ddev_logs',
-        'ddev_ssh'
+        'ddev_snapshot',
+        'ddev_exec',
+        'ddev_poweroff',
+        'ddev_version',
+        'ddev_help'
       ];
 
       const toolNames = DDEV_TOOLS.map(tool => tool.name);
@@ -27,24 +29,11 @@ describe('DDEV MCP Server', () => {
       });
     });
 
-    test('should have all expected WordPress tools', () => {
-      const expectedWPTools = [
-        'ddev_wp_cli',
-        'ddev_wp_site_info',
-        'ddev_wp_plugin_install',
-        'ddev_wp_plugin_toggle',
-        'ddev_wp_plugin_list',
-        'ddev_wp_theme_install',
-        'ddev_wp_theme_activate',
-        'ddev_wp_core_update',
-        'ddev_wp_rewrite_flush',
-        'ddev_wp_search_replace'
-      ];
-
+    test('should have ddev_exec for running any command', () => {
       const toolNames = DDEV_TOOLS.map(tool => tool.name);
-      expectedWPTools.forEach(expectedTool => {
-        expect(toolNames).toContain(expectedTool);
-      });
+      expect(toolNames).toContain('ddev_exec');
+      const execTool = getToolDefinition('ddev_exec');
+      expect(execTool?.description).toMatch(/exec|command/i);
     });
 
     test('should get tool definition by name', () => {
@@ -61,52 +50,24 @@ describe('DDEV MCP Server', () => {
   });
 
   describe('Argument Validation', () => {
-    test('should validate required arguments for ddev_drush', () => {
-      // Valid arguments
-      const validResult = validateToolArguments('ddev_drush', {
-        command: 'cr'
+    test('should validate required arguments for ddev_exec', () => {
+      // Valid arguments (projectPath + command required)
+      const validResult = validateToolArguments('ddev_exec', {
+        projectPath: '/path/to/project',
+        command: 'drush cr'
       });
       expect(validResult.valid).toBe(true);
       expect(validResult.errors).toBeUndefined();
 
-      // Missing required argument
-      const invalidResult = validateToolArguments('ddev_drush', {});
-      expect(invalidResult.valid).toBe(false);
-      expect(invalidResult.errors).toContain('Missing required field: command');
-    });
+      // Missing required argument: command
+      const missingCommand = validateToolArguments('ddev_exec', { projectPath: '/path' });
+      expect(missingCommand.valid).toBe(false);
+      expect(missingCommand.errors).toContain('Missing required field: command');
 
-    test('should validate required arguments for WordPress tools', () => {
-      // Valid WP-CLI command
-      const validWPResult = validateToolArguments('ddev_wp_cli', {
-        command: 'plugin list'
-      });
-      expect(validWPResult.valid).toBe(true);
-      expect(validWPResult.errors).toBeUndefined();
-
-      // Valid plugin installation
-      const validPluginResult = validateToolArguments('ddev_wp_plugin_install', {
-        plugin: 'akismet'
-      });
-      expect(validPluginResult.valid).toBe(true);
-
-      // Missing required plugin name
-      const invalidPluginResult = validateToolArguments('ddev_wp_plugin_install', {});
-      expect(invalidPluginResult.valid).toBe(false);
-      expect(invalidPluginResult.errors).toContain('Missing required field: plugin');
-
-      // Valid search/replace
-      const validSearchReplaceResult = validateToolArguments('ddev_wp_search_replace', {
-        oldUrl: 'https://old-site.com',
-        newUrl: 'https://new-site.com'
-      });
-      expect(validSearchReplaceResult.valid).toBe(true);
-
-      // Missing required URLs
-      const invalidSearchReplaceResult = validateToolArguments('ddev_wp_search_replace', {
-        oldUrl: 'https://old-site.com'
-      });
-      expect(invalidSearchReplaceResult.valid).toBe(false);
-      expect(invalidSearchReplaceResult.errors).toContain('Missing required field: newUrl');
+      // Missing required argument: projectPath
+      const missingPath = validateToolArguments('ddev_exec', { command: 'drush cr' });
+      expect(missingPath.valid).toBe(false);
+      expect(missingPath.errors).toContain('Missing required field: projectPath');
     });
 
     test('should validate argument types', () => {

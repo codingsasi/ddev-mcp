@@ -6,7 +6,6 @@
 export interface DDEVCommandOptions {
   projectPath?: string;
   projectName?: string;
-  timeout?: number;
 }
 
 export interface DDEVStartOptions extends DDEVCommandOptions {

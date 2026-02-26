@@ -40,11 +40,17 @@ export class CommandExecutor {
 
       // For DDEV commands, we need to preserve symlinks by using cd && command
       let finalCommand = command;
-      let finalOptions: any = {
-        timeout: options.timeout || 30000,
-        maxBuffer: options.maxBuffer || 1024 * 1024,
+      const envMax = process.env.DDEV_MCP_MAX_BUFFER;
+      const parsed = envMax !== undefined && envMax !== '' ? parseInt(envMax, 10) : NaN;
+      const defaultMaxBuffer =
+        Number.isFinite(parsed) && parsed > 0 ? parsed : 2 * 1024 * 1024; // 2 MiB default
+      const finalOptions: any = {
+        maxBuffer: options.maxBuffer ?? defaultMaxBuffer,
         env: { ...process.env, ...options.env },
       };
+      if (options.timeout != null) {
+        finalOptions.timeout = options.timeout;
+      }
 
       if (workingDir && command.startsWith('ddev ')) {
         // Use cd to preserve symlinks for DDEV commands

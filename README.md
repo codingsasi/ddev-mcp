@@ -14,6 +14,10 @@ This DDEV MCP server provides comprehensive development environment automation f
 - **Database Operations**: Import/export, snapshots, migrations
 - **CMS-Specific Workflows**: Drupal, WordPress, Laravel, etc
 
+## **Documentation**
+
+- **[Tools reference](docs/tools.md)** — What each MCP tool does, arguments, and full `ddev help` output. Use this to see what the AI sees and how tools map to the DDEV CLI.
+
 ## **Features**
 
 ### **Environment Management**
@@ -37,14 +41,13 @@ This DDEV MCP server provides comprehensive development environment automation f
 - **Testing**: Playwright, Cypress, PHPUnit, and custom test runners
 - **And more**: Any command you can run in a DDEV container!
 
-### 🛡️ **Production Ready**
+###  **Production Ready**
 - Thorough error handling and logging
 - Input validation and sanitization
-- Configurable timeouts and security measures
 - TypeScript for type safety
 - **Dangerous Command Protection**: Built-in safety system for production-affecting commands
 
-## 📦 **Installation**
+##  **Installation**
 
 ### Prerequisites
 - **Node.js 20+** (Node.js 22+ preferred for best performance)
@@ -80,7 +83,7 @@ npm run build
 npm run dev
 ```
 
-## ⚙️ **Configuration**
+##  **Configuration**
 
 ### MCP Client Configuration
 
@@ -108,11 +111,15 @@ No additional configuration needed! The server automatically detects your DDEV p
 # Optional: Configure logging level
 export DDEV_MCP_LOG_LEVEL="DEBUG"
 
+# Optional: Max buffer size in bytes for command output (default: 2097152 = 2 MiB).
+# If a command's stdout+stderr exceeds this, Node throws ERR_CHILD_PROCESS_STDIO_MAXBUFFER.
+export DDEV_MCP_MAX_BUFFER="4194304"
+
 # Safety: Allow dangerous commands (default: false)
 export ALLOW_DANGEROUS_COMMANDS="true"
 ```
 
-### 🛡️ **Dangerous Command Protection**
+###  **Dangerous Command Protection**
 
 The DDEV MCP server includes built-in protection against dangerous commands that could affect production environments:
 
@@ -178,39 +185,12 @@ The DDEV MCP server operates on the **current working directory** principle:
 "DDEV MCP: Go to the correct project folder and run database import"
 ```
 
-## 🛠️ **Available Tools (13 Total)**
+##  **Available Tools**
 
-### **Core Project Management (6 tools)**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_start` | Start DDEV environment | `projectPath`, `skipHooks` |
-| `ddev_stop` | Stop DDEV environment | `projectPath` |
-| `ddev_restart` | Restart DDEV environment | `projectPath` |
-| `ddev_describe` | Get detailed project info | `projectPath` |
-| `ddev_list` | List all DDEV projects | `activeOnly` |
-| `ddev_logs` | Get service logs | `projectPath`, `service`, `tail` |
-
-### **Database Operations (3 tools)**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_import_db` | Import database | `projectPath`, `src`, `targetDb` |
-| `ddev_export_db` | Export database | `projectPath`, `file`, `compressionType` |
-| `ddev_snapshot` | Manage database snapshots | `projectPath`, `action`, `name` |
-
-### **Universal Command Executor (1 tool - THE MOST IMPORTANT)**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_exec` | **Execute ANY command in container** | `projectPath`, `command`, `service`, `workdir` |
-
-### **Utilities (3 tools)**
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `ddev_version` | Get DDEV version info | `timeout` |
-| `ddev_poweroff` | Stop all DDEV projects | `timeout` |
-| `message_complete_notification` | Send OS notification | `title`, `message` |
+Project management (start, stop, restart, describe, list, logs), database (import, export, snapshots), **`ddev_exec`** for any in-container command (Drush, WP-CLI, Composer, etc.), plus `ddev_help`, `ddev_version`, `ddev_poweroff`, and `message_complete_notification`. Full list with arguments and `ddev help` output: **[Tools reference](docs/tools.md)**.
 
 
-## 🧪 **Development & Testing**
+##  **Development & Testing**
 
 ### Build and Test
 
@@ -229,13 +209,12 @@ The DDEV MCP server operates on the **current working directory** principle:
       "env": {
         "DDEV_MCP_LOG_LEVEL": "INFO"
       },
-      "timeout": 30000
     },
   }
 }
 ```
 
-## 🔧 **Architecture**
+##  **Architecture**
 
 ### Project Structure
 
@@ -254,7 +233,7 @@ src/
 └── index.ts         # CLI entry point
 ```
 
-## 🤝 **Contributing**
+##  **Contributing**
 
 This project is designed for team collaboration with familiar JavaScript/TypeScript patterns:
 
